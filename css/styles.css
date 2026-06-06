@@ -6,8 +6,37 @@
 /* ---- Fonts ------------------------------------------------------------- */
 /* Press Start 2P (Latin pixel), Galmuri11 (Korean pixel), Pretendard (body) */
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
-@import url("https://cdn.jsdelivr.net/gh/quiple/galmuri/dist/Galmuri11.css");
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+
+/* ---- 네오 둥근모 폰트 (로컬 self-host) --------------------------------- */
+@font-face {
+  font-family: "NeoDunggeunmo";
+  src: url("../assets/fonts/neodgm.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+/* 갈무리 계열 유지 (픽셀 UI 요소 fallback용) */
+@font-face {
+  font-family: "Galmuri11";
+  src: url("../assets/fonts/Galmuri11.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Galmuri11";
+  src: url("../assets/fonts/Galmuri11-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "GalmuriMono11";
+  src: url("../assets/fonts/GalmuriMono11.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* ---- Design tokens ----------------------------------------------------- */
 :root {
@@ -28,12 +57,12 @@
   --line:       #cfe0ef;
 
   --pixel: "Press Start 2P", "Galmuri11", monospace;
-  /* always-Latin pixel text (wordmark, logo, tagline). No Galmuri here so the
-     fallback before Press Start 2P loads is a NARROW monospace, never the wide
-     Korean pixel font — which would otherwise overflow on small screens. */
   --pixel-latin: "Press Start 2P", ui-monospace, "Cascadia Mono", Menlo, monospace;
-  --sans:  "Pretendard", system-ui, -apple-system, "Apple SD Gothic Neo",
-           "Malgun Gothic", sans-serif;
+  /* 네오 둥근모 폰트로 전체 텍스트 통일 */
+  --sans:        "NeoDunggeunmo", "Galmuri11", monospace;
+  --sans-body:   "NeoDunggeunmo", "Galmuri11", monospace;
+  --sans-small:  "NeoDunggeunmo", "Galmuri11", monospace;
+  --mono:        "GalmuriMono11", "NeoDunggeunmo", monospace;
 
   --radius: 14px;
   --radius-sm: 10px;
@@ -55,12 +84,13 @@ html {
 
 body {
   margin: 0;
-  font-family: var(--sans);
+  font-family: var(--sans-body);
   color: var(--ink);
   background: var(--white);
-  line-height: 1.65;
-  font-size: 16px;
+  line-height: 1.8;
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
@@ -124,7 +154,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   margin: 0 auto;
   max-width: 56ch;
   color: var(--ink-soft);
-  font-size: clamp(15px, 2.2vw, 17px);
+  font-family: var(--sans-body);
+  font-size: clamp(14px, 2vw, 16px);
 }
 .eyebrow {
   display: inline-block;
@@ -332,26 +363,45 @@ body.menu-open { overflow: hidden; }
   pointer-events: none;
   z-index: 1;
 }
-.hero__inner { position: relative; z-index: 2; max-width: 760px; }
+.hero__inner { position: relative; z-index: 3; max-width: 760px; text-align: center; }
 
-/* pixel-art goal sprite from the title screen */
+/* sub text + CTA pinned to the bottom of the hero section */
+.hero__foot {
+  position: absolute;
+  bottom: clamp(70px, 11vh, 130px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 760px;
+  padding-inline: 20px;
+  text-align: center;
+  z-index: 3;
+}
+
+/* pixel-art goal/backboard — pinned to top of hero, no bounce */
 .hero__goal {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: clamp(200px, 52vw, 360px);
   height: auto;
-  margin: 0 auto 10px;
   filter: drop-shadow(4px 6px 0 rgba(18, 42, 68, .25));
+  z-index: 2;
+  pointer-events: none;
 }
 
-/* TRICK / SHOT stacked pixel wordmark images */
+/* TRICK / SHOT horizontal pixel wordmark images */
 .wordmark {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: clamp(2px, 1vw, 8px);
+  justify-content: center;
+  gap: clamp(14px, 3vw, 32px);
   margin: 4px 0 0;
 }
-.wordmark__trick { width: clamp(200px, 56vw, 420px); height: auto; }
-.wordmark__shot  { width: clamp(165px, 46vw, 348px); height: auto; }
+.wordmark__trick { width: clamp(195px, 48vw, 420px); height: auto; }
+.wordmark__shot  { width: clamp(162px, 39vw, 348px); height: auto; }
 
 .hero__tagline {
   margin: 24px 0 6px;
@@ -369,11 +419,12 @@ body.menu-open { overflow: hidden; }
 .hero__flyer--ufo { width: clamp(48px, 9vw, 96px); top: 16%; left: 7%; animation: drift 9s ease-in-out infinite; }
 .hero__flyer--jet { width: clamp(44px, 8vw, 88px); top: 26%; right: 8%; animation: drift 11s ease-in-out infinite reverse; }
 .hero__sub {
+  font-family: var(--sans-body);
   color: var(--navy-deep);
-  font-size: clamp(15px, 2.4vw, 18px);
+  font-size: clamp(14px, 2.2vw, 16px);
   max-width: 44ch;
   margin: 14px auto 30px;
-  font-weight: 600;
+  font-weight: 400;
 }
 .hero__cta {
   display: flex;
@@ -420,7 +471,7 @@ body.menu-open { overflow: hidden; }
   letter-spacing: 0;
   word-spacing: -0.1em;
 }
-.feature p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+.feature p { margin: 0; font-family: var(--sans-body); color: var(--ink-soft); font-size: 14px; }
 
 /* ---- Stages ------------------------------------------------------------ */
 .stages-grid {
@@ -558,11 +609,12 @@ body.menu-open { overflow: hidden; }
 }
 .map-slide__subtitle {
   margin: 0 0 12px;
+  font-family: var(--sans-body);
   color: var(--ball-dark);
   font-size: 13px;
   font-weight: 700;
 }
-.map-slide__desc { margin: 0 0 18px; color: var(--ink-soft); font-size: 15px; line-height: 1.65; }
+.map-slide__desc { margin: 0 0 18px; font-family: var(--sans-body); color: var(--ink-soft); font-size: 14px; line-height: 1.8; }
 .map-tags {
   display: flex;
   flex-wrap: wrap;
@@ -628,9 +680,9 @@ body.menu-open { overflow: hidden; }
   background: var(--white);
   border: 0;
   padding: 18px 18px;
-  font-family: var(--sans);
+  font-family: var(--sans-body);
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   color: var(--navy);
 }
 .faq-q .plus {
@@ -648,7 +700,7 @@ body.menu-open { overflow: hidden; }
   transition: max-height .3s ease;
   color: var(--ink-soft);
 }
-.faq-a > div { padding: 0 18px 20px; }
+.faq-a > div { padding: 0 18px 20px; font-family: var(--sans-body); font-size: 14px; }
 
 /* ---- Download ---------------------------------------------------------- */
 .download { text-align: center; }
@@ -680,7 +732,7 @@ body.menu-open { overflow: hidden; }
 .store-btn .store-meta .big {
   font-family: var(--pixel); font-size: 13px; margin-top: 4px;
 }
-.store-note { text-align: center; margin-top: 22px; color: var(--ink-soft); font-size: 13px; }
+.store-note { text-align: center; margin-top: 22px; font-family: var(--sans-body); color: var(--ink-soft); font-size: 13px; }
 .mobile-menu .menu-cta { justify-content: center; color: #fff; font-size: 15px; border-color: var(--navy); }
 
 /* ---- Footer ------------------------------------------------------------ */
@@ -696,13 +748,13 @@ body.menu-open { overflow: hidden; }
   gap: 30px;
 }
 .footer-brand .brand__logo { color: #fff; text-shadow: 2px 2px 0 #0c2138; }
-.footer-brand p { margin: 14px 0 0; font-size: 14px; color: #9fc0dc; max-width: 38ch; }
+.footer-brand p { margin: 14px 0 0; font-family: var(--sans-body); font-size: 14px; color: #9fc0dc; max-width: 38ch; }
 .footer-col h4 {
   font-family: var(--pixel); font-size: 11px; color: #fff;
   letter-spacing: 0; word-spacing: -0.1em;
   margin: 0 0 16px;
 }
-.footer-col a { display: block; padding: 7px 0; color: #b9d3ea; font-size: 15px; }
+.footer-col a { display: block; padding: 7px 0; font-family: var(--sans-body); color: #b9d3ea; font-size: 14px; }
 .footer-col a:hover { color: #fff; }
 .footer-bottom {
   margin-top: 36px; padding-top: 22px;
@@ -711,6 +763,23 @@ body.menu-open { overflow: hidden; }
   align-items: center; justify-content: space-between;
   font-size: 13px; color: #9fc0dc;
 }
+
+/* ---- OSS license block ------------------------------------------------- */
+.oss-license-block {
+  background: #eef6fd;
+  border: 3px solid var(--navy);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--hard-sm);
+  padding: 18px 20px;
+  margin: 14px 0 22px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.oss-license-block p { margin: 0 0 6px; }
 
 /* ---- Legal / patch-note pages ----------------------------------------- */
 .page-hero {
@@ -733,19 +802,19 @@ body.menu-open { overflow: hidden; }
 
 .doc { max-width: 800px; margin-inline: auto; }
 .doc h2 {
-  font-family: var(--pixel);
-  font-size: 14px;
+  font-family: var(--sans);
+  font-size: 22px;
+  font-weight: 700;
   letter-spacing: 0;
-  word-spacing: -0.1em;
-  line-height: 1.6;
+  line-height: 1.4;
   color: var(--navy);
-  margin: 38px 0 14px;
+  margin: 48px 0 14px;
   padding-bottom: 10px;
   border-bottom: 3px solid var(--line);
 }
 .doc h2:first-child { margin-top: 0; }
-.doc h3 { color: var(--navy); margin: 22px 0 8px; font-size: 17px; }
-.doc p, .doc li { color: var(--ink); font-size: 16px; }
+.doc h3 { font-family: var(--sans); color: var(--navy); margin: 28px 0 8px; font-size: 16px; font-weight: 700; }
+.doc p, .doc li { font-family: var(--sans-body); color: var(--ink); font-size: 13px; line-height: 1.9; }
 .doc ul { list-style: disc; padding-left: 22px; margin: 10px 0; display: grid; gap: 6px; }
 .doc .updated { color: var(--ink-soft); font-size: 14px; font-style: italic; }
 .doc table {

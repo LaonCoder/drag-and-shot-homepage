@@ -15,7 +15,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=5">
 </head>
 <body>
 
@@ -82,20 +82,19 @@
       <img src="assets/game/ufo.png" class="hero__flyer hero__flyer--ufo px" alt="" aria-hidden="true">
       <img src="assets/game/jet.png" class="hero__flyer hero__flyer--jet px" alt="" aria-hidden="true">
 
-      <div class="hero__inner">
-        <img src="assets/game/goal.png" class="hero__goal px ball-bounce" alt="농구 골대와 공" width="383" height="223">
+      <img src="assets/game/goal.png" class="hero__goal px" alt="농구 골대와 공" width="383" height="223">
 
+      <!-- wordmark — flexbox-centered in the full section -->
+      <div class="hero__inner">
         <h1 class="wordmark">
           <img src="assets/game/wordmark_trick.png" class="wordmark__trick px" alt="TRICK" width="93" height="24">
           <img src="assets/game/wordmark_shot.png" class="wordmark__shot px" alt="SHOT" width="77" height="24">
         </h1>
+      </div>
 
-        <p class="hero__tagline">
-          <img src="assets/game/tap_to_start.png" class="px tap-img" alt="" aria-hidden="true" width="139" height="8">
-          <span class="sr-only" data-i18n="hero.tagline">TAP ANYWHERE TO START</span>
-        </p>
+      <!-- sub text + CTA pinned to bottom of hero -->
+      <div class="hero__foot">
         <p class="hero__sub" data-i18n="hero.sub">튕기고, 휘고, 골인! 물리 기반 원터치 농구 트릭샷.</p>
-
         <div class="hero__cta">
           <a class="btn btn--primary" href="#download" data-i18n="hero.ctaDownload">다운로드</a>
           <a class="btn btn--ghost" href="#stages" data-i18n="hero.ctaPlay">지금 플레이</a>
@@ -261,6 +260,7 @@
         <div class="footer-col">
           <h4 data-i18n="footer.legalTitle">정책</h4>
           <a href="privacy.html" data-i18n="footer.linkPrivacy">개인정보 처리방침</a>
+          <a href="oss-license.html">오픈소스 라이센스</a>
           <a href="#" data-i18n="footer.linkTerms">이용약관</a>
         </div>
       </div>
