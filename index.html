@@ -13,7 +13,7 @@
   <meta property="og:description" content="한 번의 슛, 완벽한 트릭샷. 물리 기반 원터치 농구 게임.">
   <meta property="og:type" content="website">
 
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v=17">
 </head>
 <body>
 
@@ -21,16 +21,25 @@
   <header class="site-header">
     <div class="container">
       <nav class="nav" aria-label="Main">
-        <a class="brand" href="#top" aria-label="TRICK SHOT home">
-          <span class="brand__logo">TRICK <span class="accent">SHOT</span></span>
-          <span class="badge">v1.0.0</span>
-        </a>
+        <div class="nav__left">
+          <a class="brand nav__reveal" href="#top" aria-label="TRICK SHOT home">
+            <span class="brand__wordmark">
+              <img src="assets/game/wordmark_trick.png" class="px" alt="TRICK" width="93" height="24">
+              <img src="assets/game/wordmark_shot.png" class="px" alt="SHOT" width="77" height="24">
+            </span>
+          </a>
+
+          <a class="header-version" href="patch-notes.html" aria-label="버전 정보 — 패치 노트 보기">
+            <span class="header-version__icon" aria-hidden="true"></span>
+            <span class="header-version__text">v 1.0.0</span>
+          </a>
+        </div>
 
         <div class="nav__right">
           <ul class="nav__links">
             <li><a href="#stages" data-i18n="nav.stages">스테이지</a></li>
             <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
-            <li><a href="patch-notes.html" data-i18n="nav.patch">패치 노트</a></li>
+            <li><a class="nav-link--patch" href="patch-notes.html" data-i18n="nav.patch">패치 노트</a></li>
             <li><a href="#download" data-i18n="nav.download">다운로드</a></li>
           </ul>
 
@@ -83,7 +92,7 @@
 
       <!-- sub text + CTA pinned to bottom of hero -->
       <div class="hero__foot">
-        <p class="hero__sub" data-i18n="hero.sub">튕기고, 휘고, 골인! 물리 기반 원터치 농구 트릭샷.</p>
+        <p class="hero__sub" data-i18n-html="hero.sub">벽에 튕기고 장애물을 넘어, 불가능해 보이는 슛에 도전하세요!<br>짜릿한 트릭샷의 재미를 경험해 보세요.</p>
         <div class="hero__cta">
           <a class="btn-orange" href="#download">
             <span class="btn-orange__bg" aria-hidden="true">
@@ -196,34 +205,14 @@
         </div>
 
         <div class="store-grid">
-          <a class="store-btn reveal" href="#" aria-label="App Store">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M16.4 12.6c0-2 1.6-3 1.7-3.1-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.3 2-1.4 2.4-.4 6 1 8 .6 1 1.4 2.1 2.4 2 1-.1 1.3-.6 2.5-.6s1.5.6 2.6.6c1 0 1.7-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.1-.8-2.1-3.2zM14.6 6.3c.5-.7.9-1.6.8-2.6-.8 0-1.8.6-2.4 1.3-.5.6-1 1.5-.8 2.5.9.1 1.8-.5 2.4-1.2z"/>
-            </svg>
-            <span class="store-meta">
-              <span class="small" data-i18n="download.stores.ios.small">App Store에서</span>
-              <span class="big" data-i18n="download.stores.ios.big">App Store</span>
-            </span>
+          <a class="store-link reveal" href="#" aria-label="App Store">
+            <img class="store-badge store-badge--ko" src="assets/store/appstore_ko.svg" alt="App Store에서 다운로드">
+            <img class="store-badge store-badge--en" src="assets/store/appstore_en.svg" alt="Download on the App Store">
           </a>
 
-          <a class="store-btn reveal" href="#" aria-label="Google Play">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M3.6 2.2c-.3.3-.5.7-.5 1.3v17c0 .6.2 1 .5 1.3l11-9.8-11-9.8zM16 9.4l-2.5-1.5L5 2.5l9 8 2-1zM18.9 11l-2.3-1.3-2.2 2 2.2 2 2.3-1.3c.7-.4.7-1 0-1.4zM5 21.5l8.5-5.4 2.5-1.5-2-1-9 7.9z"/>
-            </svg>
-            <span class="store-meta">
-              <span class="small" data-i18n="download.stores.android.small">다운로드</span>
-              <span class="big" data-i18n="download.stores.android.big">Google Play</span>
-            </span>
-          </a>
-
-          <a class="store-btn reveal" href="#" aria-label="Steam">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2a10 10 0 0 0-9.9 8.8l5.3 2.2a2.8 2.8 0 0 1 1.7-.6h.2l2.4-3.4v-.1a3.7 3.7 0 1 1 3.7 3.7h-.1l-3.4 2.4v.2a2.8 2.8 0 0 1-5.6.1l-3.8-1.6A10 10 0 1 0 12 2zM7.6 17.7l-1.2-.5a2.1 2.1 0 0 0 3.9-1.1 2.1 2.1 0 0 0-2.8-2l1.2.5a1.6 1.6 0 1 1-1.1 2.9zm9.2-6.3a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
-            </svg>
-            <span class="store-meta">
-              <span class="small" data-i18n="download.stores.steam.small">이용 가능</span>
-              <span class="big" data-i18n="download.stores.steam.big">Steam</span>
-            </span>
+          <a class="store-link reveal" href="#" aria-label="Google Play">
+            <img class="store-badge store-badge--ko" src="assets/store/googleplay_ko.svg" alt="Google Play에서 다운로드">
+            <img class="store-badge store-badge--en" src="assets/store/googleplay_en.svg" alt="Get it on Google Play">
           </a>
         </div>
 
@@ -269,8 +258,8 @@
     </div>
   </footer>
 
-  <script src="js/translations.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/translations.js?v=2"></script>
+  <script src="js/i18n.js?v=2"></script>
+  <script src="js/main.js?v=3"></script>
 </body>
 </html>

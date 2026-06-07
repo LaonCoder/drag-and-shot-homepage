@@ -7,35 +7,43 @@
   <meta name="description" content="TRICK SHOT 패치 노트 및 업데이트 내역">
   <meta name="theme-color" content="#7cb8e8">
   <link rel="icon" type="image/png" href="assets/game/app_icon.png">
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v=17">
 </head>
 <body>
 
-  <header class="site-header">
+  <header class="site-header is-revealed">
     <div class="container">
       <nav class="nav" aria-label="Main">
-        <a class="brand" href="index.html" aria-label="TRICK SHOT home">
-          <span class="brand__logo">TRICK <span class="accent">SHOT</span></span>
-          <span class="badge">v1.0.0</span>
-        </a>
+        <div class="nav__left">
+          <a class="brand nav__reveal" href="index.html#top" aria-label="TRICK SHOT home">
+            <span class="brand__wordmark">
+              <img src="assets/game/wordmark_trick.png" class="px" alt="TRICK" width="93" height="24">
+              <img src="assets/game/wordmark_shot.png" class="px" alt="SHOT" width="77" height="24">
+            </span>
+          </a>
+
+          <a class="header-version" href="patch-notes.html" aria-label="버전 정보 — 패치 노트 보기">
+            <span class="header-version__icon" aria-hidden="true"></span>
+            <span class="header-version__text">v 1.0.0</span>
+          </a>
+        </div>
+
         <div class="nav__right">
           <ul class="nav__links">
             <li><a href="index.html#stages" data-i18n="nav.stages">스테이지</a></li>
             <li><a href="index.html#faq" data-i18n="nav.faq">FAQ</a></li>
-            <li><a href="patch-notes.html" data-i18n="nav.patch">패치 노트</a></li>
+            <li><a class="nav-link--patch" href="patch-notes.html" data-i18n="nav.patch">패치 노트</a></li>
             <li><a href="index.html#download" data-i18n="nav.download">다운로드</a></li>
           </ul>
+
           <div class="lang-toggle" role="group" aria-label="Language">
             <button type="button" data-lang-btn="ko" aria-pressed="true">KO</button>
             <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
           </div>
-          <button class="gear-btn" type="button" aria-label="설정" data-i18n-attr="aria-label:nav.settings">
-            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3.2"/>
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/>
-            </svg>
-          </button>
-          <button class="nav__toggle" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobile-menu" data-i18n-attr="aria-label:nav.menuOpen">
+
+          <button class="nav__toggle" type="button" aria-label="메뉴 열기"
+                  aria-expanded="false" aria-controls="mobile-menu"
+                  data-i18n-attr="aria-label:nav.menuOpen">
             <span></span><span></span><span></span>
           </button>
         </div>

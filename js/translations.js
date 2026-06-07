@@ -21,7 +21,7 @@ window.TS_I18N = {
     },
     hero: {
       tagline: "TAP AND DRAG TO SHOOT",
-      sub: "공을 드래그해 골대에 넣어라! 물리 기반 농구 트릭샷 퍼즐. Forest와 Small Town, 두 가지 테마 맵에서 42개의 스테이지에 도전하세요.",
+      sub: "벽에 튕기고 장애물을 넘어, 불가능해 보이는 슛에 도전하세요!<br>짜릿한 트릭샷의 재미를 경험해 보세요.",
       ctaPlay: "맵 보기",
       ctaDownload: "지금 바로 다운로드",
     },
@@ -80,11 +80,6 @@ window.TS_I18N = {
       title: "지금 바로 시작하세요",
       desc: "원하는 플랫폼에서 무료로 다운로드하고 첫 트릭샷에 도전해 보세요.",
       note: "* 출시 플랫폼 및 일정은 지역에 따라 다를 수 있습니다.",
-      stores: {
-        ios:     { small: "App Store에서",  big: "App Store" },
-        android: { small: "다운로드",        big: "Google Play" },
-        steam:   { small: "이용 가능",       big: "Steam" },
-      },
     },
     footer: {
       desc: "공을 드래그해 골대에 넣어라! 물리 기반 농구 트릭샷 퍼즐 TRICK SHOT.",
@@ -215,11 +210,6 @@ window.TS_I18N = {
       title: "Get started right now",
       desc: "Download free on your favorite platform and take your first trick shot.",
       note: "* Launch platforms and timing may vary by region.",
-      stores: {
-        ios:     { small: "Download on the", big: "App Store" },
-        android: { small: "GET IT ON",       big: "Google Play" },
-        steam:   { small: "AVAILABLE ON",    big: "Steam" },
-      },
     },
     footer: {
       desc: "Drag the ball, aim for the hoop. TRICK SHOT, a physics-based basketball trick-shot puzzle.",

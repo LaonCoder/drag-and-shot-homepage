@@ -274,6 +274,26 @@
     $$(".reveal:not(.in)").forEach(function (el) { revealObserver.observe(el); });
   }
 
+  /* ---- header reveal -----------------------------------------------------
+     The header starts out showing only the version badge. Once the header's
+     bottom edge has scrolled past the hero section's bottom edge, the rest
+     of the nav springs into view (and springs back out on the way up). */
+  function setupHeaderReveal() {
+    var header = $(".site-header");
+    var hero = $(".hero");
+    if (!header || !hero) return;
+
+    function update() {
+      var headerBottom = header.getBoundingClientRect().bottom;
+      var heroBottom = hero.getBoundingClientRect().bottom;
+      header.classList.toggle("is-revealed", heroBottom <= headerBottom);
+    }
+
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  }
+
   /* ---- mobile menu ------------------------------------------------------ */
   function setupMenu() {
     var nav = $(".nav");
@@ -336,6 +356,7 @@
     setupMenu();
     setupFaq();
     setupLangToggle();
+    setupHeaderReveal();
     setupMapCarousel();
     stampYear();
     renderAll(window.i18n.getLang());
