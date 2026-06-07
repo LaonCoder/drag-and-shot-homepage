@@ -13,9 +13,7 @@
   <meta property="og:description" content="한 번의 슛, 완벽한 트릭샷. 물리 기반 원터치 농구 게임.">
   <meta property="og:type" content="website">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="css/styles.css?v=5">
+  <link rel="stylesheet" href="css/styles.css?v=6">
 </head>
 <body>
 
@@ -40,15 +38,6 @@
             <button type="button" data-lang-btn="ko" aria-pressed="true">KO</button>
             <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
           </div>
-
-          <button class="gear-btn" type="button" aria-label="설정"
-                  data-i18n-attr="aria-label:nav.settings">
-            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3.2"/>
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/>
-            </svg>
-          </button>
 
           <button class="nav__toggle" type="button" aria-label="메뉴 열기"
                   aria-expanded="false" aria-controls="mobile-menu"
@@ -96,13 +85,19 @@
       <div class="hero__foot">
         <p class="hero__sub" data-i18n="hero.sub">튕기고, 휘고, 골인! 물리 기반 원터치 농구 트릭샷.</p>
         <div class="hero__cta">
-          <a class="btn btn--primary" href="#download" data-i18n="hero.ctaDownload">다운로드</a>
-          <a class="btn btn--ghost" href="#stages" data-i18n="hero.ctaPlay">지금 플레이</a>
+          <a class="btn-orange" href="#download">
+            <span class="btn-orange__bg" aria-hidden="true">
+              <span class="btn-orange__seg btn-orange__seg--left"></span>
+              <span class="btn-orange__seg btn-orange__seg--center"></span>
+              <span class="btn-orange__seg btn-orange__seg--right"></span>
+            </span>
+            <span class="btn-orange__label" data-i18n="hero.ctaDownload">지금 바로 다운로드</span>
+          </a>
         </div>
       </div>
 
       <!-- pixel-art city skyline footer -->
-      <img src="assets/game/city_skyline.png" class="hero__skyline px" alt="" aria-hidden="true">
+      <div class="hero__skyline" aria-hidden="true"></div>
     </section>
 
     <!-- ===================== Features ===================== -->

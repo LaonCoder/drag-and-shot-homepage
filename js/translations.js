@@ -17,13 +17,13 @@ window.TS_I18N = {
     nav: {
       stages: "맵", faq: "FAQ", patch: "패치 노트",
       download: "다운로드", privacy: "개인정보", home: "홈",
-      menuOpen: "메뉴 열기", menuClose: "메뉴 닫기", settings: "설정",
+      menuOpen: "메뉴 열기", menuClose: "메뉴 닫기",
     },
     hero: {
       tagline: "TAP AND DRAG TO SHOOT",
       sub: "공을 드래그해 골대에 넣어라! 물리 기반 농구 트릭샷 퍼즐. Forest와 Small Town, 두 가지 테마 맵에서 42개의 스테이지에 도전하세요.",
       ctaPlay: "맵 보기",
-      ctaDownload: "다운로드",
+      ctaDownload: "지금 바로 다운로드",
     },
     features: {
       eyebrow: "WHY TRICK SHOT",
@@ -152,7 +152,7 @@ window.TS_I18N = {
     nav: {
       stages: "Maps", faq: "FAQ", patch: "Patch Notes",
       download: "Download", privacy: "Privacy", home: "Home",
-      menuOpen: "Open menu", menuClose: "Close menu", settings: "Settings",
+      menuOpen: "Open menu", menuClose: "Close menu",
     },
     hero: {
       tagline: "TAP AND DRAG TO SHOOT",

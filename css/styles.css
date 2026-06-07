@@ -4,35 +4,10 @@
    ========================================================================= */
 
 /* ---- Fonts ------------------------------------------------------------- */
-/* Press Start 2P (Latin pixel), Galmuri11 (Korean pixel), Pretendard (body) */
-@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
-
-/* ---- 네오 둥근모 폰트 (로컬 self-host) --------------------------------- */
+/* 네오 둥근모(NeoDunggeunmo) 단일 폰트로 통일 (로컬 self-host) */
 @font-face {
   font-family: "NeoDunggeunmo";
   src: url("../assets/fonts/neodgm.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-/* 갈무리 계열 유지 (픽셀 UI 요소 fallback용) */
-@font-face {
-  font-family: "Galmuri11";
-  src: url("../assets/fonts/Galmuri11.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Galmuri11";
-  src: url("../assets/fonts/Galmuri11-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "GalmuriMono11";
-  src: url("../assets/fonts/GalmuriMono11.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -56,13 +31,13 @@
   --shadow:     #16314d;
   --line:       #cfe0ef;
 
-  --pixel: "Press Start 2P", "Galmuri11", monospace;
-  --pixel-latin: "Press Start 2P", ui-monospace, "Cascadia Mono", Menlo, monospace;
-  /* 네오 둥근모 폰트로 전체 텍스트 통일 */
-  --sans:        "NeoDunggeunmo", "Galmuri11", monospace;
-  --sans-body:   "NeoDunggeunmo", "Galmuri11", monospace;
-  --sans-small:  "NeoDunggeunmo", "Galmuri11", monospace;
-  --mono:        "GalmuriMono11", "NeoDunggeunmo", monospace;
+  /* 네오 둥근모 폰트로 전체 텍스트(픽셀/본문/모노 포함) 통일 */
+  --pixel:       "NeoDunggeunmo", monospace;
+  --pixel-latin: "NeoDunggeunmo", monospace;
+  --sans:        "NeoDunggeunmo", monospace;
+  --sans-body:   "NeoDunggeunmo", monospace;
+  --sans-small:  "NeoDunggeunmo", monospace;
+  --mono:        "NeoDunggeunmo", monospace;
 
   --radius: 14px;
   --radius-sm: 10px;
@@ -84,6 +59,7 @@ html {
 
 body {
   margin: 0;
+  padding-top: var(--header-h);
   font-family: var(--sans-body);
   color: var(--ink);
   background: var(--white);
@@ -121,7 +97,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .pixel { font-family: var(--pixel); line-height: 1.5; letter-spacing: 0; }
 
-/* Korean pixel font (Galmuri) renders wide word-gaps — tighten them so
+/* Korean pixel font (NeoDunggeunmo) renders wide word-gaps — tighten them so
    multi-word pixel headings don't look broken */
 .pixel-heading {
   font-family: var(--pixel);
@@ -142,6 +118,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 .section-head { text-align: center; margin-bottom: clamp(28px, 5vw, 52px); }
 .section-head h2 {
   font-family: var(--pixel);
+  font-weight: 700;
   font-size: clamp(17px, 4vw, 27px);
   color: var(--navy);
   margin: 0 0 14px;
@@ -176,6 +153,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   justify-content: center;
   gap: 10px;
   font-family: var(--pixel);
+  font-weight: 700;
   font-size: 12px;
   letter-spacing: 0;
   word-spacing: -0.1em;
@@ -196,12 +174,13 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 /* ---- Header / navigation ---------------------------------------------- */
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 50;
   background: rgba(255, 255, 255, .92);
   backdrop-filter: blur(8px);
-  border-bottom: 3px solid var(--navy);
 }
 .nav {
   height: var(--header-h);
@@ -270,18 +249,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 .lang-toggle button[aria-pressed="true"] { background: var(--navy); color: #fff; }
 
 /* decorative gear (matches title screen) */
-.gear-btn {
-  display: none;
-  width: 40px; height: 40px;
-  align-items: center; justify-content: center;
-  border: 3px solid var(--navy);
-  border-radius: 10px;
-  background: var(--white);
-  box-shadow: var(--hard-sm);
-  color: var(--navy);
-}
-.gear-btn:hover { transform: rotate(20deg); transition: transform .2s ease; }
-
 /* hamburger */
 .nav__toggle {
   width: 44px; height: 44px;
@@ -345,21 +312,26 @@ body.menu-open { overflow: hidden; }
 /* ---- Hero -------------------------------------------------------------- */
 .hero {
   position: relative;
-  min-height: calc(100vh - var(--header-h));
-  min-height: calc(100dvh - var(--header-h));
+  min-height: 720px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 40px 20px calc(60px + env(safe-area-inset-bottom));
+  padding: 40px clamp(28px, 7vw, 88px) calc(60px + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-bottom) 100%);
   overflow: hidden;
 }
 .hero__skyline {
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  width: 100%;
-  height: auto;
+  height: clamp(64px, 11vw, 120px);
+  background-image: url('../assets/game/city_skyline.png');
+  background-repeat: repeat-x;
+  background-position: bottom left;
+  background-size: auto 100%;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
   pointer-events: none;
   z-index: 1;
 }
@@ -397,11 +369,11 @@ body.menu-open { overflow: hidden; }
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: clamp(14px, 3vw, 32px);
+  gap: clamp(22px, 5vw, 52px);
   margin: 4px 0 0;
 }
-.wordmark__trick { width: clamp(195px, 48vw, 420px); height: auto; }
-.wordmark__shot  { width: clamp(162px, 39vw, 348px); height: auto; }
+.wordmark__trick { width: clamp(225px, 74vw, 725px); height: auto; }
+.wordmark__shot  { width: clamp(186px, 60vw, 600px); height: auto; }
 
 .hero__tagline {
   margin: 24px 0 6px;
@@ -431,6 +403,72 @@ body.menu-open { overflow: hidden; }
   flex-wrap: wrap;
   gap: 14px;
   justify-content: center;
+}
+
+/* pixel-art orange CTA button — 3-slice sprite from the in-game UI kit
+   (option_button/orange), left + center(tiled) + right, with a pressed
+   sprite swap on :active to match the in-game press feedback. */
+.btn-orange {
+  --btn-h: clamp(50px, 9vw, 64px);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--btn-h);
+  min-width: clamp(320px, 44vw, 480px);
+  padding: 0 clamp(30px, 6vw, 44px);
+  font-family: var(--pixel);
+  font-size: clamp(13px, 2vw, 16px);
+  color: #fff;
+  text-decoration: none;
+  transition: transform .08s ease;
+}
+.btn-orange:hover { transform: translateY(-2px); }
+.btn-orange:active { transform: translateY(1px); }
+.btn-orange__bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 0;
+  pointer-events: none;
+}
+.btn-orange__seg {
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+.btn-orange__seg--left,
+.btn-orange__seg--right {
+  flex: 0 0 auto;
+  aspect-ratio: 13 / 17;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.btn-orange__seg--left   { background-image: url('../assets/game/btn_orange_left.png'); }
+.btn-orange__seg--right  { background-image: url('../assets/game/btn_orange_right.png'); }
+.btn-orange__seg--center {
+  flex: 1 1 auto;
+  background-image: url('../assets/game/btn_orange_center.png');
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+}
+.btn-orange:active .btn-orange__seg--left   { background-image: url('../assets/game/btn_orange_left_pressed.png'); }
+.btn-orange:active .btn-orange__seg--center { background-image: url('../assets/game/btn_orange_center_pressed.png'); }
+.btn-orange:active .btn-orange__seg--right  { background-image: url('../assets/game/btn_orange_right_pressed.png'); }
+.btn-orange__label {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+  font-weight: 700;
+  /* In-game label sits in a top-anchored box of 15/17 of the button
+     height (not the full height), so it reads ~1/17 higher than dead
+     center; pressed state centers it exactly — matches option_button. */
+  transform: translateY(calc(var(--btn-h) / -17));
+}
+.btn-orange:active .btn-orange__label {
+  transform: translateY(0);
+  color: #c9ccd1;
 }
 
 /* ---- Feature cards ----------------------------------------------------- */
@@ -464,6 +502,7 @@ body.menu-open { overflow: hidden; }
 }
 .feature h3 {
   font-family: var(--pixel);
+  font-weight: 700;
   font-size: 12px;
   color: var(--navy);
   margin: 0 0 10px;
@@ -505,7 +544,7 @@ body.menu-open { overflow: hidden; }
 }
 .stage-card__body { padding: 16px 18px 20px; }
 .stage-card__body h3 {
-  font-family: var(--pixel); font-size: 12px; color: var(--navy);
+  font-family: var(--pixel); font-weight: 700; font-size: 12px; color: var(--navy);
   margin: 0 0 10px; line-height: 1.5;
 }
 .stage-card__body p { margin: 0 0 14px; color: var(--ink-soft); font-size: 14px; }
@@ -790,6 +829,7 @@ body.menu-open { overflow: hidden; }
 }
 .page-hero h1 {
   font-family: var(--pixel);
+  font-weight: 700;
   font-size: clamp(18px, 4.4vw, 30px);
   color: var(--navy);
   margin: 0 0 12px;
@@ -920,7 +960,6 @@ body.menu-open { overflow: hidden; }
   .mobile-menu { display: none; }
   .nav__links { display: flex; align-items: center; gap: 4px; }
   .nav__right > .lang-toggle { display: inline-flex; }
-  .gear-btn   { display: inline-flex; }
 }
 
 @media (min-width: 1100px) {
