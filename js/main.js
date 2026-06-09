@@ -351,6 +351,119 @@
     $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
   }
 
+  /* ---- flyer animation (UFO + jet, mirrors game title screen) -----------
+     Pass 1 (left→right): UFO only
+     Pass 2 (right→left): UFO leads, jet trails behind
+     4s pause between passes; loops indefinitely while hero is in view.     */
+  function initFlyerAnimation() {
+    var ufoEl = $(".hero__flyer--ufo");
+    var jetEl = $(".hero__flyer--jet");
+    var heroEl = $(".hero");
+    if (!ufoEl || !jetEl || !heroEl) return;
+
+    var WAIT_MS = 4000;
+    var direction = 1; // +1 = left→right, -1 = right→left
+    var rafId = null;
+    var timeoutId = null;
+    var heroInView = true;
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        heroInView = entries[0].isIntersecting;
+        if (!heroInView) {
+          if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+          if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
+          ufoEl.style.display = "none";
+          jetEl.style.display = "none";
+        } else if (!rafId && !timeoutId) {
+          timeoutId = setTimeout(runPass, 800);
+        }
+      }, { threshold: 0.1 }).observe(heroEl);
+    }
+
+    function ufoWidth() { return Math.max(24, Math.min(48, window.innerWidth * 0.045)); }
+    function jetWidth() { return Math.max(22, Math.min(44, window.innerWidth * 0.04)); }
+
+    function runPass() {
+      timeoutId = null;
+      if (!heroInView) return;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+
+      var vw = window.innerWidth;
+      var ufoW = ufoWidth();
+      var jetW = jetWidth();
+      var gap = Math.max(28, Math.min(60, vw * 0.05)); // wider gap between vehicles
+      var speed = vw * 0.0825 * 2.16; // px/sec — same ratio as in-game
+      var hasJet = direction < 0;
+
+      // Y: fixed relative to hero section (position: absolute), upper band
+      var heroH = heroEl.offsetHeight;
+      var yMin = heroH * 0.10;
+      var yMax = heroH * 0.32;
+      var baseY = yMin + Math.random() * (yMax - yMin);
+
+      // Horizontal: traverse full hero width (= viewport width)
+      var startX, endX;
+      if (direction > 0) {
+        startX = -ufoW;
+        endX   = vw + ufoW;
+      } else {
+        startX = vw + (hasJet ? gap + jetW : 0);
+        endX   = -(ufoW + (hasJet ? gap + jetW : 0));
+      }
+
+      var durationSec = Math.abs(endX - startX) / speed;
+
+      // Tilt: 1.4 s sine wave, ±5–8° random (matches game)
+      var tiltMaxDeg    = 5 + Math.random() * 3;
+      var tiltPeriodSec = 1.4;
+
+      // Undulation: vertical sine wave only when jet present (3.5 s, game spec)
+      var undulAmp       = hasJet ? Math.max(2, vw / 428 * 3) : 0;
+      var undulPeriodSec = 3.5;
+
+      ufoEl.style.display = "block";
+      jetEl.style.display = hasJet ? "block" : "none";
+
+      var startTime = null;
+      function step(ts) {
+        if (!startTime) startTime = ts;
+        var elapsed = (ts - startTime) / 1000;
+        var t = Math.min(elapsed / durationSec, 1);
+
+        var ufoX    = startX + (endX - startX) * t;
+        var tiltDeg = Math.sin(elapsed * 2 * Math.PI / tiltPeriodSec) * tiltMaxDeg;
+        var undulY  = undulAmp * Math.sin(elapsed * 2 * Math.PI / undulPeriodSec);
+        var y       = baseY + undulY;
+
+        ufoEl.style.left      = ufoX + "px";
+        ufoEl.style.top       = y + "px";
+        ufoEl.style.transform = "scaleX(" + direction + ") rotate(" + tiltDeg + "deg)";
+
+        if (hasJet) {
+          // jet trails behind UFO; scaleX(1) = default orientation faces left
+          jetEl.style.left      = (ufoX + ufoW + gap) + "px";
+          jetEl.style.top       = y + "px";
+          jetEl.style.transform = "scaleX(1) rotate(" + tiltDeg + "deg)";
+        }
+
+        if (t < 1) {
+          rafId = requestAnimationFrame(step);
+        } else {
+          rafId = null;
+          ufoEl.style.display = "none";
+          jetEl.style.display = "none";
+          direction = -direction;
+          timeoutId = setTimeout(runPass, WAIT_MS);
+        }
+      }
+
+      rafId = requestAnimationFrame(step);
+    }
+
+    timeoutId = setTimeout(runPass, 1000);
+  }
+
   /* ---- boot ------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
     setupMenu();
@@ -360,6 +473,7 @@
     setupMapCarousel();
     stampYear();
     renderAll(window.i18n.getLang());
+    initFlyerAnimation();
   });
 
   // re-render collections + re-apply static strings on language change

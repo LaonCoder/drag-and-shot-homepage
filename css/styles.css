@@ -437,7 +437,7 @@ body.menu-open { overflow: hidden; }
   pointer-events: none;
   z-index: 1;
 }
-.hero__inner { position: relative; z-index: 3; max-width: 760px; text-align: center; }
+.hero__inner { position: relative; z-index: 3; max-width: 1000px; text-align: center; }
 
 /* sub text + CTA pinned to the bottom of the hero section */
 /* Spans from roughly the title's bottom edge down to the section's
@@ -468,7 +468,7 @@ body.menu-open { overflow: hidden; }
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: clamp(288px, 74vw, 518px);
+  width: clamp(320px, 82vw, 575px);
   height: auto;
   filter: drop-shadow(-4px 6px 0 rgba(18, 42, 68, .25));
   z-index: 2;
@@ -481,13 +481,13 @@ body.menu-open { overflow: hidden; }
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: clamp(22px, 5vw, 52px);
+  gap: clamp(28px, 6vw, 64px);
   margin: 4px 0 0;
   /* same in-game overlay shadow spec as the CTA button: y:2, blur:1, 50% black */
   filter: drop-shadow(0 2px 1px rgba(0, 0, 0, .5));
 }
-.wordmark__trick { width: clamp(225px, 74vw, 725px); height: auto; }
-.wordmark__shot  { width: clamp(186px, 60vw, 600px); height: auto; }
+.wordmark__trick { width: clamp(270px, 88vw, 900px); height: auto; }
+.wordmark__shot  { width: clamp(223px, 72vw, 745px); height: auto; }
 
 .hero__tagline {
   margin: 24px 0 6px;
@@ -495,15 +495,16 @@ body.menu-open { overflow: hidden; }
 }
 .hero__tagline .tap-img { width: clamp(150px, 42vw, 240px); height: auto; margin: 0 auto; }
 
-/* floating pixel decorations (UFO, jet) */
+/* floating pixel decorations (UFO, jet) — positions/visibility controlled by JS */
 .hero__flyer {
   position: absolute;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
   height: auto;
+  display: none;
 }
-.hero__flyer--ufo { width: clamp(48px, 9vw, 96px); top: 16%; left: 7%; animation: drift 9s ease-in-out infinite; }
-.hero__flyer--jet { width: clamp(44px, 8vw, 88px); top: 26%; right: 8%; animation: drift 11s ease-in-out infinite reverse; }
+.hero__flyer--ufo { width: clamp(24px, 4.5vw, 48px); }
+.hero__flyer--jet { width: clamp(22px, 4vw, 44px); }
 .hero__sub {
   font-family: var(--sans-body);
   color: #fff;
