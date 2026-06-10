@@ -441,10 +441,10 @@
         ufoEl.style.transform = "scaleX(" + direction + ") rotate(" + tiltDeg + "deg)";
 
         if (hasJet) {
-          // jet trails behind UFO; scaleX(1) = default orientation faces left
+          // jet trails behind UFO; no tilt — steady flight
           jetEl.style.left      = (ufoX + ufoW + gap) + "px";
           jetEl.style.top       = y + "px";
-          jetEl.style.transform = "scaleX(1) rotate(" + tiltDeg + "deg)";
+          jetEl.style.transform = "scaleX(1)";
         }
 
         if (t < 1) {
@@ -464,6 +464,168 @@
     timeoutId = setTimeout(runPass, 1000);
   }
 
+  /* ---- bird flock animation (mirrors game title screen logic) -----------
+     Sprite: 15×3 px sheet, 5 frames of 3×3 px each, 10 fps
+     Flock:  5–10 birds, random direction each pass, 5–10 s gap between flocks
+     Each bird has: trail offset behind leader, Y scatter, flutter sine wave  */
+  function initBirdAnimation() {
+    var heroEl = $(".hero");
+    var canvas = $(".hero__birds");
+    if (!heroEl || !canvas) return;
+
+    var ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+
+    var heroInView = true;
+    var flock = null;
+    var timeoutId = null;
+    var rafId = null;
+    var lastTs = null;
+
+    var FRAME_COUNT   = 5;
+    var FRAME_DUR_SEC = 0.1;   // 10 fps
+    var FLUTTER_AMP   = 1.2;   // asset-pixel amplitude (game spec)
+
+    function syncSize() {
+      canvas.width  = heroEl.offsetWidth;
+      canvas.height = heroEl.offsetHeight;
+      ctx.imageSmoothingEnabled = false;
+    }
+    window.addEventListener("resize", syncSize);
+    syncSize();
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        heroInView = entries[0].isIntersecting;
+        if (!heroInView) {
+          if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
+          flock = null;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        } else if (!flock && !timeoutId) {
+          timeoutId = setTimeout(spawnFlock, 600);
+        }
+      }, { threshold: 0.1 }).observe(heroEl);
+    }
+
+    function spawnFlock() {
+      timeoutId = null;
+      if (!heroInView) return;
+
+      var vw = canvas.width;
+      var vh = canvas.height;
+      var spriteScale = vw / 428;
+
+      var birdCount = 5 + Math.floor(Math.random() * 6);      // 5–10 birds
+      var direction = Math.random() < 0.5 ? 1 : -1;           // random dir each time
+      var speed     = vw * (0.065 + Math.random() * 0.035);   // game spec px/sec
+
+      // Render size: 3 native-px × spriteScale (scale factor 1)
+      var birdSz = Math.max(3, Math.min(12, spriteScale * 3));
+
+      var birds = [];
+      var cumulTrail = 0;
+      for (var i = 0; i < birdCount; i++) {
+        var spacing = (4.5 + Math.random() * 4.0) * spriteScale;
+        cumulTrail += spacing;
+        birds.push({
+          offsetX:     -direction * cumulTrail + (Math.random() - 0.5) * 1.5 * spriteScale,
+          offsetY:     (Math.random() - 0.5) * 14.0 * spriteScale,
+          flutterPhase: Math.random() * 2 * Math.PI,
+          flutterFreq:  0.7 + Math.random() * 0.5,
+          framePhase:   Math.floor(Math.random() * FRAME_COUNT),
+        });
+      }
+
+      // Lead bird starts off-screen; tail birds also clear the edge
+      var leadStartX = direction > 0 ? -birdSz : vw + birdSz + cumulTrail;
+
+      // Y: hero-relative — lower half (screen middle down to near section bottom)
+      var yMin = vh * 0.45;
+      var yMax = vh * 0.82;
+      var baseY = yMin + Math.random() * (yMax - yMin);
+
+      flock = {
+        direction: direction,
+        speed:     speed,
+        leadX:     leadStartX,
+        baseY:     baseY,
+        birds:     birds,
+        birdSz:    birdSz,
+        cumulTrail: cumulTrail,
+        elapsed:   0,
+      };
+    }
+
+    var birdImg = new Image();
+    birdImg.src = "assets/game/bird.png";
+
+    function loop(ts) {
+      rafId = requestAnimationFrame(loop);
+      var dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 0;
+      lastTs = ts;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!flock) return;
+
+      flock.elapsed += dt;
+      flock.leadX   += flock.direction * flock.speed * dt;
+
+      var vw = canvas.width;
+      var vh = canvas.height;
+      var spriteScale = vw / 428;
+
+      // Flock is done only when every trailing bird has fully left the screen.
+      // Trailing birds span ≈ cumulTrail behind the lead (opposite to direction).
+      var gone = flock.direction > 0
+        ? (flock.leadX - flock.cumulTrail) > vw + flock.birdSz
+        : (flock.leadX + flock.cumulTrail) < -flock.birdSz;
+      if (gone) {
+        flock = null;
+        timeoutId = setTimeout(spawnFlock, 5000 + Math.random() * 5000);
+        return;
+      }
+
+      if (!birdImg.complete || !birdImg.naturalWidth) return;
+
+      for (var i = 0; i < flock.birds.length; i++) {
+        var bird = flock.birds[i];
+        var bx = flock.leadX + bird.offsetX;
+        if (bx + flock.birdSz < -8 || bx > vw + 8) continue;
+
+        var flutter = Math.sin(
+          flock.elapsed * 2 * Math.PI * bird.flutterFreq + bird.flutterPhase
+        ) * FLUTTER_AMP * spriteScale;
+        var by = flock.baseY + bird.offsetY + flutter;
+        if (by < -flock.birdSz || by > vh) continue;
+
+        var frameIdx = (Math.floor(flock.elapsed / FRAME_DUR_SEC) + bird.framePhase) % FRAME_COUNT;
+        var srcX = frameIdx * 3; // 3 px per frame in sprite sheet
+
+        // Translate to bird center → mirror if flying left → draw
+        ctx.save();
+        ctx.translate(bx + flock.birdSz / 2, by + flock.birdSz / 2);
+        if (flock.direction < 0) ctx.scale(-1, 1);
+        ctx.drawImage(
+          birdImg,
+          srcX, 0, 3, 3,
+          -flock.birdSz / 2, -flock.birdSz / 2, flock.birdSz, flock.birdSz
+        );
+        ctx.restore();
+      }
+    }
+
+    function start() {
+      spawnFlock();
+      if (!rafId) rafId = requestAnimationFrame(loop);
+    }
+
+    if (birdImg.complete && birdImg.naturalWidth) {
+      start();
+    } else {
+      birdImg.onload = start;
+    }
+  }
+
   /* ---- boot ------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
     setupMenu();
@@ -474,6 +636,7 @@
     stampYear();
     renderAll(window.i18n.getLang());
     initFlyerAnimation();
+    initBirdAnimation();
   });
 
   // re-render collections + re-apply static strings on language change

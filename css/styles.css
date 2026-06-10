@@ -312,9 +312,10 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .nav__links a {
   font-family: var(--pixel);
-  font-size: 12px;
+  font-size: 18px;
   letter-spacing: 0;
   word-spacing: -0.1em;
+  text-transform: uppercase;
   color: var(--navy);
   padding: 8px 10px;
   border-radius: 8px;
@@ -323,12 +324,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .nav__links a:hover { color: var(--ball-dark); background: #f1f7fd; }
 
-/* patch-notes link — shrunk to 4/5 size with a slightly smaller font
-   so it reads as a quieter, secondary action next to the others */
 .nav__links a.nav-link--patch {
-  font-size: 10px;
-  padding: 6.4px 8px;
-  border-radius: 6.4px;
+  padding: 8px 10px;
 }
 
 /* language toggle */
@@ -445,6 +442,7 @@ body.menu-open { overflow: hidden; }
    `space-around` centers the sub text within the upper half and the
    download button within the lower half (an even-split approximation
    of "center each one in the band below the previous element"). */
+
 .hero__foot {
   position: absolute;
   top: 58%;
@@ -495,10 +493,19 @@ body.menu-open { overflow: hidden; }
 }
 .hero__tagline .tap-img { width: clamp(150px, 42vw, 240px); height: auto; margin: 0 auto; }
 
+/* bird flock canvas — sits behind UFO/jet, above gradient background */
+.hero__birds {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 /* floating pixel decorations (UFO, jet) — positions/visibility controlled by JS */
 .hero__flyer {
   position: absolute;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   height: auto;
   display: none;
@@ -511,6 +518,7 @@ body.menu-open { overflow: hidden; }
   font-size: clamp(15px, 2.4vw, 18px);
   max-width: 38em;
   margin: 0 auto;
+  margin-top: 30px;
   font-weight: 400;
   line-height: 1.6;
   text-shadow: 1px 2px 0 rgba(18, 42, 68, .45);
@@ -536,17 +544,19 @@ body.menu-open { overflow: hidden; }
   min-width: clamp(320px, 44vw, 480px);
   padding: 0 clamp(30px, 6vw, 44px);
   font-family: var(--pixel);
-  font-size: clamp(13px, 2vw, 16px);
+  font-size: clamp(15px, 2.4vw, 19px);
   color: #fff;
   text-decoration: none;
-  transition: transform .08s ease;
+  transition: transform .12s ease-out;
   /* matches the in-game overlay shadow spec: y:2, blur:1, 50% black —
      a single drop-shadow follows the sprite's alpha shape, covering
      both the pixel-art button frame and the label text together */
   filter: drop-shadow(0 2px 1px rgba(0, 0, 0, .5));
 }
-.btn-orange:hover { transform: translateY(-2px); }
-.btn-orange:active { transform: translateY(1px); }
+/* hover: 1.2× scale + 살짝 더 큰 폰트 */
+.btn-orange:hover { transform: scale(1.1); font-size: clamp(17px, 2.7vw, 21px); }
+/* active: 1.1× 기준으로 눌림 — 1.05×로 살짝 축소, 즉각 반응 */
+.btn-orange:active { transform: scale(1.05) translateY(2px); font-size: clamp(17px, 2.7vw, 21px); transition-duration: .06s; }
 .btn-orange__bg {
   position: absolute;
   inset: 0;
