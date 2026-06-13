@@ -11,129 +11,7 @@
   var $  = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
-  /* ---- map art assets (pixel-art sprites copied from the game) ---------- */
-  var MAP_ART = {
-    forest:    { thumb: "assets/game/map_forest.png",    title: "assets/game/title_forest.png",    skyline: "assets/game/skyline_forest.png" },
-    smalltown: { thumb: "assets/game/map_smalltown.png", title: "assets/game/title_smalltown.png", skyline: "assets/game/skyline_smalltown.png" },
-  };
-
   /* ---- renderers -------------------------------------------------------- */
-  function renderMaps(lang) {
-    var track = $("#stages-grid");
-    if (!track) return;
-    var s = window.i18n.t("stages", lang);
-    track.innerHTML = "";
-
-    s.items.forEach(function (map) {
-      var art = MAP_ART[map.id] || {};
-      var slide = document.createElement("article");
-      slide.className = "map-slide";
-      slide.setAttribute("role", "tabpanel");
-      slide.innerHTML =
-        '<div class="map-slide__art map-slide__art--' + esc(map.id) + '">' +
-          (art.skyline ? '<img class="map-slide__skyline px" src="' + art.skyline + '" alt="" aria-hidden="true">' : '') +
-          (art.thumb ? '<img class="map-slide__thumb px ball-bounce" src="' + art.thumb + '" alt="" aria-hidden="true" width="60" height="60">' : '') +
-          '<span class="map-slide__count">' + esc(String(map.stageCount)) + ' ' + esc(s.stagesLabel) + '</span>' +
-        '</div>' +
-        '<div class="map-slide__body">' +
-          (art.title ? '<img class="map-slide__title px" src="' + art.title + '" alt="">' : '<h3></h3>') +
-          '<h3 class="' + (art.title ? 'sr-only' : '') + '"></h3>' +
-          (map.subtitle ? '<p class="map-slide__subtitle"></p>' : '') +
-          '<p class="map-slide__desc"></p>' +
-          '<ul class="map-tags"></ul>' +
-        '</div>';
-      var titleImg = slide.querySelector(".map-slide__title");
-      if (titleImg) titleImg.alt = map.name;
-      slide.querySelector("h3").textContent = map.name;
-      if (map.subtitle) slide.querySelector(".map-slide__subtitle").textContent = map.subtitle;
-      slide.querySelector(".map-slide__desc").textContent = map.description;
-      var tagList = slide.querySelector(".map-tags");
-      map.tags.forEach(function (tag) {
-        var li = document.createElement("li");
-        li.className = "map-tag";
-        li.textContent = tag;
-        tagList.appendChild(li);
-      });
-      track.appendChild(slide);
-    });
-
-    initMapCarousel();
-  }
-
-  /* ---- map carousel (swipe left/right between maps) --------------------- */
-  var mapIndex = 0;
-  function initMapCarousel() {
-    var track = $("#stages-grid");
-    var dotsWrap = $("#map-dots");
-    if (!track) return;
-    var slides = $$(".map-slide", track);
-    if (!slides.length) return;
-    if (mapIndex >= slides.length) mapIndex = slides.length - 1;
-
-    // dots
-    if (dotsWrap) {
-      dotsWrap.innerHTML = "";
-      slides.forEach(function (_, i) {
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "map-dot" + (i === mapIndex ? " on" : "");
-        b.setAttribute("role", "tab");
-        b.setAttribute("aria-label", "Map " + (i + 1));
-        b.addEventListener("click", function () { goToMap(i); });
-        dotsWrap.appendChild(b);
-      });
-    }
-    applyMapIndex();
-  }
-
-  function applyMapIndex() {
-    var track = $("#stages-grid");
-    if (!track) return;
-    track.style.transform = "translateX(" + (-mapIndex * 100) + "%)";
-    $$(".map-dot", $("#map-dots")).forEach(function (d, i) {
-      d.classList.toggle("on", i === mapIndex);
-    });
-    var slides = $$(".map-slide", track);
-    var prev = $(".map-nav--prev"), next = $(".map-nav--next");
-    if (prev) prev.disabled = mapIndex <= 0;
-    if (next) next.disabled = mapIndex >= slides.length - 1;
-  }
-
-  function goToMap(i) {
-    var slides = $$(".map-slide", $("#stages-grid"));
-    mapIndex = Math.max(0, Math.min(i, slides.length - 1));
-    applyMapIndex();
-  }
-
-  function setupMapCarousel() {
-    var prev = $(".map-nav--prev"), next = $(".map-nav--next");
-    if (prev) prev.addEventListener("click", function () { goToMap(mapIndex - 1); });
-    if (next) next.addEventListener("click", function () { goToMap(mapIndex + 1); });
-
-    var viewport = $(".map-viewport");
-    if (!viewport) return;
-
-    // pointer/touch swipe
-    var startX = 0, dragging = false;
-    viewport.addEventListener("pointerdown", function (e) {
-      dragging = true; startX = e.clientX;
-    });
-    viewport.addEventListener("pointerup", function (e) {
-      if (!dragging) return;
-      dragging = false;
-      var dx = e.clientX - startX;
-      if (Math.abs(dx) > 40) goToMap(mapIndex + (dx < 0 ? 1 : -1));
-    });
-    viewport.addEventListener("pointercancel", function () { dragging = false; });
-
-    // keyboard
-    viewport.setAttribute("tabindex", "0");
-    viewport.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowLeft") goToMap(mapIndex - 1);
-      else if (e.key === "ArrowRight") goToMap(mapIndex + 1);
-    });
-  }
-
   function renderFaq(lang) {
     var list = $("#faq-list");
     if (!list) return;
@@ -247,7 +125,6 @@
   }
 
   function renderAll(lang) {
-    renderMaps(lang);
     renderFaq(lang);
     renderPatch(lang);
     renderPrivacy(lang);
@@ -760,18 +637,59 @@
     startAutoplay();
   }
 
+  /* ---- maps section decorations: skyline footer (1/10 of section height)
+     + falling debris particles confined to the section's bounds          */
+  function initStagesDecor() {
+    var section = $("#stages");
+    var skyline = $(".stages-skyline", section);
+    var particles = $(".stages-particles", section);
+    if (!section) return;
+
+    function update() {
+      var h = section.offsetHeight;
+      if (skyline) skyline.style.height = (h / 10) + "px";
+      section.style.setProperty("--stages-h", h + "px");
+    }
+    update();
+    window.addEventListener("resize", update);
+
+    if (!particles) return;
+    var PARTICLE_COUNT = 15;
+    var IMAGE_COUNT = 8;
+    for (var i = 0; i < PARTICLE_COUNT; i++) {
+      var img = document.createElement("img");
+      var n = (i % IMAGE_COUNT) + 1;
+      img.src = "assets/game/particles/small_town_map_particle_" + n + ".png";
+      img.className = "px stages-particle";
+      img.alt = "";
+      img.setAttribute("aria-hidden", "true");
+
+      var size = 28 + Math.random() * 28;       // 28–56px
+      var duration = 8 + Math.random() * 8;     // 8–16s
+      // stratify horizontal position so particles spread evenly across
+      // the section instead of clustering by chance
+      var left = ((i + Math.random()) / PARTICLE_COUNT) * 100;
+      img.style.width = size + "px";
+      img.style.left = left + "%";
+      img.style.animationDuration = duration + "s";
+      img.style.animationDelay = (-Math.random() * duration) + "s";
+
+      particles.appendChild(img);
+    }
+  }
+
   /* ---- boot ------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
     setupMenu();
     setupFaq();
     setupLangToggle();
     setupHeaderReveal();
-    setupMapCarousel();
     stampYear();
     renderAll(window.i18n.getLang());
     initFlyerAnimation();
     initBirdAnimation();
     initShotCarousel();
+    initStagesDecor();
   });
 
   // re-render collections + re-apply static strings on language change
