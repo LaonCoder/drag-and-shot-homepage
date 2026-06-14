@@ -23,7 +23,8 @@
       el.className = "faq-item reveal";
       el.innerHTML =
         '<button class="faq-q" aria-expanded="false" aria-controls="' + id + '">' +
-          '<span class="faq-q__text"></span><span class="plus" aria-hidden="true">+</span>' +
+          '<span class="faq-q__text"></span>' +
+          '<img src="assets/game/faq_chevron.png" class="px faq-q__icon" alt="" aria-hidden="true" width="7" height="6">' +
         '</button>' +
         '<div class="faq-a" id="' + id + '" role="region"><div></div></div>';
       el.querySelector(".faq-q__text").textContent = item.q;
@@ -675,6 +676,20 @@
       img.style.animationDelay = (-Math.random() * duration) + "s";
 
       particles.appendChild(img);
+    }
+
+    // clicking the map button shakes it, like it's refusing to open yet
+    var stack = $(".stages-placeholder__stack", section);
+    var placeholder = $(".stages-placeholder", section);
+    if (stack && placeholder) {
+      stack.addEventListener("click", function () {
+        placeholder.classList.remove("shake");
+        void placeholder.offsetWidth; // restart animation if already running
+        placeholder.classList.add("shake");
+      });
+      placeholder.addEventListener("animationend", function () {
+        placeholder.classList.remove("shake");
+      });
     }
   }
 
