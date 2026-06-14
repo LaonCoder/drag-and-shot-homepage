@@ -56,8 +56,7 @@ window.TS_I18N = {
       desc: "게임에 대하여 더 궁금한 점이 있다면 <a href=\"mailto:laonpixels@gmail.com\">laonpixels@gmail.com</a>으로 언제든 문의해주세요 :)",
     },
     download: {
-      eyebrow: "DOWNLOAD",
-      title: "지금 바로 시작하세요",
+      title: "지금 바로 다운로드하세요",
       desc: "원하는 플랫폼에서 무료로 다운로드하고 첫 트릭샷에 도전해 보세요.",
       note: "* 출시 플랫폼 및 일정은 지역에 따라 다를 수 있습니다.",
     },
@@ -166,8 +165,7 @@ window.TS_I18N = {
       desc: "If you have any questions about the game, feel free to reach out anytime at <a href=\"mailto:laonpixels@gmail.com\">laonpixels@gmail.com</a> :)",
     },
     download: {
-      eyebrow: "DOWNLOAD",
-      title: "Get started right now",
+      title: "Download right now",
       desc: "Download free on your favorite platform and take your first trick shot.",
       note: "* Launch platforms and timing may vary by region.",
     },
