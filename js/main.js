@@ -33,73 +33,96 @@
     });
   }
 
-  function renderPatch(lang) {
-    var wrap = $("#patch-releases");
-    if (!wrap) return;
-    var p = window.i18n.t("patch", lang);
+  function patchSlug(version) {
+    return String(version).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  }
 
-    // build the legend from only the change types actually present
-    var legend = $("#patch-legend");
-    if (legend) {
-      var present = {};
-      p.releases.forEach(function (rel) {
-        (rel.groups || []).forEach(function (g) { present[g.type] = true; });
-        if (rel.knownIssues && rel.knownIssues.length) present.issue = true;
-      });
-      var order = ["new", "imp", "fix", "issue"];
-      legend.innerHTML = order
-        .filter(function (t) { return present[t] && p.legend[t]; })
-        .map(function (t) { return tag(t, p.legend[t]); })
-        .join("");
-    }
+  function patchChangeGroup(type, label, items) {
+    var lis = items.map(function (it) {
+      var li = document.createElement("li");
+      li.textContent = it;
+      return li.outerHTML;
+    }).join("");
+    return '' +
+      '<div class="change-group">' +
+        '<h4><span class="dot dot--' + type + '"></span>' + esc(label) + '</h4>' +
+        '<ul>' + lis + '</ul>' +
+      '</div>';
+  }
 
-    wrap.innerHTML = "";
-    p.releases.forEach(function (rel) {
-      var el = document.createElement("section");
-      el.className = "release reveal";
-
-      var groups = (rel.groups || []).map(function (g) {
-        return changeGroup(g.type, p.legend[g.type], g.items);
-      }).join("");
-
-      // known issues render as their own change-group ("issue" type)
-      var issues = (rel.knownIssues && rel.knownIssues.length)
-        ? changeGroup("issue", p.legend.issue, rel.knownIssues)
-        : "";
-
-      var intro = rel.intro
-        ? '<p class="release__intro">' + esc(rel.intro) + '</p>' : "";
-      var outro = rel.outro
-        ? '<p class="release__outro">' + esc(rel.outro) + '</p>' : "";
-
-      el.innerHTML =
-        '<div class="release__head">' +
+  function patchDetailHTML(rel, p) {
+    var groups = (rel.groups || []).map(function (g) {
+      return patchChangeGroup(g.type, p.legend[g.type], g.items);
+    }).join("");
+    var issues = (rel.knownIssues && rel.knownIssues.length)
+      ? patchChangeGroup("issue", p.legend.issue, rel.knownIssues) : "";
+    var intro = rel.intro ? '<p class="release__intro">' + esc(rel.intro) + '</p>' : "";
+    var outro = rel.outro ? '<p class="release__outro">' + esc(rel.outro) + '</p>' : "";
+    var thumb = rel.thumb
+      ? '<div class="patch-article__thumb"><img src="' + esc(rel.thumb) + '" alt=""></div>' : "";
+    return '' +
+      '<a class="back-link" href="#" data-patch-back><span aria-hidden="true">←</span> <span>' + esc(p.backToList || "") + '</span></a>' +
+      '<article class="patch-article">' +
+        thumb +
+        '<h1 class="patch-article__title">' + esc(rel.cardTitle || rel.version) + '</h1>' +
+        '<div class="patch-article__meta">' +
           '<span class="release__ver">' + esc(rel.version) + '</span>' +
-          '<span class="release__tag">' + esc(rel.tag) + '</span>' +
+          (rel.tag ? '<span class="release__tag">' + esc(rel.tag) + '</span>' : '') +
           '<span class="release__date">' + esc(rel.date) + '</span>' +
         '</div>' +
         intro +
         '<div class="changelog">' + groups + issues + '</div>' +
-        outro;
-      wrap.appendChild(el);
+        outro +
+      '</article>';
+  }
+
+  function routePatch(lang) {
+    var list = $("#patch-list");
+    var detail = $("#patch-detail");
+    if (!list || !detail) return;
+    var p = window.i18n.t("patch", lang);
+    var hash = (location.hash || "").replace(/^#/, "");
+    var rel = null;
+    (p.releases || []).forEach(function (r) {
+      if (patchSlug(r.version) === hash) rel = r;
     });
 
-    function changeGroup(type, label, items) {
-      var lis = items.map(function (it) {
-        var li = document.createElement("li");
-        li.textContent = it;
-        return li.outerHTML;
-      }).join("");
-      return '' +
-        '<div class="change-group">' +
-          '<h4><span class="dot dot--' + type + '"></span>' + esc(label) + '</h4>' +
-          '<ul>' + lis + '</ul>' +
-        '</div>';
+    if (rel) {
+      detail.innerHTML = patchDetailHTML(rel, p);
+      detail.hidden = false;
+      list.hidden = true;
+      window.scrollTo(0, 0);
+    } else {
+      detail.hidden = true;
+      detail.innerHTML = "";
+      list.hidden = false;
     }
+    observeReveals();
+  }
 
-    function tag(type, label) {
-      return '<span class="legend-item"><span class="dot dot--' + type + '"></span>' + esc(label) + '</span>';
-    }
+  function renderPatch(lang) {
+    var grid = $("#patch-grid");
+    if (!grid) return;
+    var p = window.i18n.t("patch", lang);
+
+    grid.innerHTML = "";
+    (p.releases || []).forEach(function (rel) {
+      var a = document.createElement("a");
+      a.className = "patch-card reveal";
+      a.href = "#" + patchSlug(rel.version);
+      a.innerHTML =
+        '<div class="patch-card__thumb">' +
+          (rel.thumb ? '<img src="' + esc(rel.thumb) + '" alt="" loading="lazy">' : '') +
+        '</div>' +
+        '<div class="patch-card__body">' +
+          '<h3 class="patch-card__title">' + esc(rel.cardTitle || rel.version) + '</h3>' +
+          '<p class="patch-card__summary">' + esc(rel.summary || "") + '</p>' +
+          '<span class="patch-card__date">' + esc(rel.date) + '</span>' +
+        '</div>';
+      grid.appendChild(a);
+    });
+
+    routePatch(lang);
   }
 
   function renderDoc(containerId, key, lang) {
@@ -126,7 +149,9 @@
     });
   }
 
+  var currentLang = null;
   function renderAll(lang) {
+    currentLang = lang;
     renderFaq(lang);
     renderPatch(lang);
     renderDoc("#privacy-doc", "privacy", lang);
@@ -712,5 +737,17 @@
   // re-render collections + re-apply static strings on language change
   document.addEventListener("languagechange", function (e) {
     renderAll(e.detail.lang);
+  });
+
+  // patch notes: grid <-> detail routing via URL hash
+  window.addEventListener("hashchange", function () {
+    if (currentLang) routePatch(currentLang);
+  });
+  document.addEventListener("click", function (e) {
+    var back = e.target.closest ? e.target.closest("[data-patch-back]") : null;
+    if (!back) return;
+    e.preventDefault();
+    history.pushState("", document.title, location.pathname + location.search);
+    if (currentLang) routePatch(currentLang);
   });
 })();

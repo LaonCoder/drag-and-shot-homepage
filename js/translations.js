@@ -118,10 +118,14 @@ window.TS_I18N = {
       title: "패치 노트",
       subtitle: "TRICK SHOT의 최신 업데이트 소식을 확인하세요.",
       back: "홈으로 돌아가기",
+      backToList: "목록으로",
       legend: { new: "추가 사항", imp: "개선", fix: "수정", issue: "알려진 이슈" },
       releases: [
         {
           version: "v1.0.0", date: "2026.05.19", tag: "정식 출시",
+          cardTitle: "TRICK SHOT v1.0.0 패치 노트",
+          summary: "첫 iOS 정식 출시!",
+          thumb: "assets/patch/v1_0_0.jpg",
           intro: "안녕하세요. 첫 정식 출시 버전입니다.",
           groups: [
             { type: "new", items: [
@@ -253,10 +257,14 @@ window.TS_I18N = {
       title: "Patch Notes",
       subtitle: "Catch up on the latest TRICK SHOT updates.",
       back: "Back to home",
+      backToList: "Back to list",
       legend: { new: "Additions", imp: "Improved", fix: "Fixed", issue: "Known issues" },
       releases: [
         {
           version: "v1.0.0", date: "May 19, 2026", tag: "Initial release",
+          cardTitle: "TRICK SHOT v1.0.0 Patch Notes",
+          summary: "First official iOS release!",
+          thumb: "assets/patch/v1_0_0.jpg",
           intro: "Hello! This is the first official release.",
           groups: [
             { type: "new", items: [
