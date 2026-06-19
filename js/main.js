@@ -61,7 +61,7 @@
     var thumb = rel.thumb
       ? '<div class="patch-article__thumb"><img src="' + esc(rel.thumb) + '" alt=""></div>' : "";
     return '' +
-      '<a class="back-link" href="#" data-patch-back><span aria-hidden="true">←</span> <span>' + esc(p.backToList || "") + '</span></a>' +
+      '<a class="back-link" href="#" data-patch-back><span aria-hidden="true">&lt;</span> <span>' + esc(p.backToList || "") + '</span></a>' +
       '<article class="patch-article">' +
         thumb +
         '<h1 class="patch-article__title">' + esc(rel.cardTitle || rel.version) + '</h1>' +
@@ -100,13 +100,45 @@
     observeReveals();
   }
 
-  function renderPatch(lang) {
+  // grid shows up to 3 rows per page; columns follow the CSS breakpoints
+  // (3 / 2 / 1), so a page holds 9 / 6 / 3 cards depending on viewport width.
+  var patchPage = 1;
+  function patchPerPage() {
+    var w = window.innerWidth;
+    var cols = w <= 560 ? 1 : (w <= 920 ? 2 : 3);
+    return cols * 3;
+  }
+
+  function renderPatchPagination(totalPages) {
+    var nav = $("#patch-pagination");
+    if (!nav) return;
+    if (totalPages <= 1) { nav.innerHTML = ""; nav.hidden = true; return; }
+    nav.hidden = false;
+    var html = '<button type="button" class="patch-page-btn patch-page-btn--arrow" data-patch-page="' +
+      (patchPage - 1) + '"' + (patchPage === 1 ? ' disabled' : '') + ' aria-label="이전 페이지">&lt;</button>';
+    for (var i = 1; i <= totalPages; i++) {
+      html += '<button type="button" class="patch-page-btn" data-patch-page="' + i + '"' +
+        (i === patchPage ? ' aria-current="page"' : '') + '>' + i + '</button>';
+    }
+    html += '<button type="button" class="patch-page-btn patch-page-btn--arrow" data-patch-page="' +
+      (patchPage + 1) + '"' + (patchPage === totalPages ? ' disabled' : '') + ' aria-label="다음 페이지">&gt;</button>';
+    nav.innerHTML = html;
+  }
+
+  function renderPatchGrid(lang) {
     var grid = $("#patch-grid");
     if (!grid) return;
     var p = window.i18n.t("patch", lang);
+    var releases = p.releases || [];
+    var perPage = patchPerPage();
+    var totalPages = Math.max(1, Math.ceil(releases.length / perPage));
+    if (patchPage > totalPages) patchPage = totalPages;
+    if (patchPage < 1) patchPage = 1;
+    var start = (patchPage - 1) * perPage;
+    var pageItems = releases.slice(start, start + perPage);
 
     grid.innerHTML = "";
-    (p.releases || []).forEach(function (rel) {
+    pageItems.forEach(function (rel) {
       var a = document.createElement("a");
       a.className = "patch-card reveal";
       a.href = "#" + patchSlug(rel.version);
@@ -122,6 +154,13 @@
       grid.appendChild(a);
     });
 
+    renderPatchPagination(totalPages);
+    observeReveals();
+  }
+
+  function renderPatch(lang) {
+    if (!$("#patch-grid")) return;
+    renderPatchGrid(lang);
     routePatch(lang);
   }
 
@@ -749,5 +788,28 @@
     e.preventDefault();
     history.pushState("", document.title, location.pathname + location.search);
     if (currentLang) routePatch(currentLang);
+  });
+
+  // patch notes: pagination (page-number buttons)
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest ? e.target.closest("[data-patch-page]") : null;
+    if (!btn || btn.disabled) return;
+    e.preventDefault();
+    var pg = parseInt(btn.getAttribute("data-patch-page"), 10);
+    if (isNaN(pg)) return;
+    patchPage = pg;
+    if (currentLang) renderPatchGrid(currentLang);
+    var list = document.querySelector("#patch-list");
+    if (list) list.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  // re-page the grid when the column count changes on resize
+  var patchResizeTimer;
+  window.addEventListener("resize", function () {
+    if (!document.querySelector("#patch-grid")) return;
+    clearTimeout(patchResizeTimer);
+    patchResizeTimer = setTimeout(function () {
+      if (currentLang) renderPatchGrid(currentLang);
+    }, 150);
   });
 })();
