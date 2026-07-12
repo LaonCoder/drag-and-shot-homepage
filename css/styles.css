@@ -171,10 +171,9 @@ ul { margin: 0; padding: 0; list-style: none; }
   left: 0;
   right: 0;
   z-index: 50;
-  /* fully opaque white — nothing shows through, so the pixel title can't
-     leave a blurred "ghost" under the bar as it scrolls past (a backdrop
-     -filter repaint artifact, worst on iOS Safari) */
-  background: #fff;
+  background: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border-bottom: 1px solid rgba(27, 58, 92, .08);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .9),
@@ -246,6 +245,17 @@ ul { margin: 0; padding: 0; list-style: none; }
   color: #000;
   text-shadow: 1px 1px 0 #9d9d9c;
   white-space: nowrap;
+}
+
+/* the hero-scoped copy of the version badge is desktop-hidden; on mobile it
+   is pinned to the hero's top-left and the nav copy is hidden instead (see
+   the mobile media query) */
+.hero-version {
+  display: none;
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  z-index: 4;
 }
 
 /* the TRICK SHOT wordmark in the header — hidden until the hero scrolls
@@ -344,9 +354,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   cursor: pointer;
 }
 .nav__toggle span { display: none; }
-/* pressed sprite while held down, or while the menu is open */
-.nav__toggle:active,
-.nav.is-open .nav__toggle {
+/* pressed sprite only while actively held down */
+.nav__toggle:active {
   background-image: url("../assets/game/web_menu_button_pressed.png");
 }
 
@@ -363,7 +372,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   display: flex;
   flex-direction: column;
   padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
-  gap: 6px;
+  gap: 16px;
   overflow-y: auto;
 }
 .mobile-menu.is-open { transform: translateY(0); }
@@ -375,8 +384,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   letter-spacing: 0;
   word-spacing: -0.1em;
 }
-/* the orange download button sits a little apart from the white group */
-.mobile-menu .web-btn--orange { margin-top: 8px; }
 .mobile-menu__lang { margin-top: auto; padding-top: 20px; display: flex; justify-content: center; }
 
 body.menu-open { overflow: hidden; }
@@ -1214,6 +1221,13 @@ html[lang="en"] .store-badge--en { display: block; }
     background: var(--line);
     border-radius: 1px;
   }
+}
+
+/* mobile nav: only the title + menu button live in the top bar; the version
+   badge moves down to the hero's top-left corner instead */
+@media (max-width: 859px) {
+  .site-header .header-version { display: none; }
+  .hero-version { display: inline-flex; }
 }
 
 /* small phones */
