@@ -367,22 +367,16 @@ ul { margin: 0; padding: 0; list-style: none; }
   overflow-y: auto;
 }
 .mobile-menu.is-open { transform: translateY(0); }
-.mobile-menu a {
-  font-family: var(--pixel);
-  font-size: 14px;
+/* menu items are full-width pixel web-buttons, stacked */
+.mobile-menu .web-btn {
+  --btn-h: 54px;
+  width: 100%;
+  font-size: 15px;
   letter-spacing: 0;
   word-spacing: -0.1em;
-  color: var(--navy);
-  padding: 18px 14px;
-  border-radius: 12px;
-  border: 3px solid transparent;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
-.mobile-menu a:hover,
-.mobile-menu a:focus-visible { background: rgba(255,255,255,.7); border-color: var(--navy); }
-.mobile-menu .menu-cta { margin-top: 14px; }
+/* the orange download button sits a little apart from the white group */
+.mobile-menu .web-btn--orange { margin-top: 8px; }
 .mobile-menu__lang { margin-top: auto; padding-top: 20px; display: flex; justify-content: center; }
 
 body.menu-open { overflow: hidden; }
@@ -437,6 +431,12 @@ body.menu-open { overflow: hidden; }
   align-items: center;
   text-align: center;
   z-index: 3;
+}
+/* hero CTA is a wide, prominent web-button */
+.hero__foot .web-btn {
+  --btn-h: clamp(50px, 9vw, 64px);
+  min-width: clamp(300px, 44vw, 460px);
+  font-size: clamp(15px, 2.4vw, 19px);
 }
 
 /* pixel-art goal/backboard — pinned to top of hero, no bounce */
@@ -504,78 +504,78 @@ body.menu-open { overflow: hidden; }
   transform: translateY(-10px);
 }
 
-/* pixel-art orange CTA button — 3-slice sprite from the in-game UI kit
-   (option_button/orange), left + center(tiled) + right, with a pressed
-   sprite swap on :active to match the in-game press feedback. */
-.btn-orange {
-  --btn-h: clamp(50px, 9vw, 64px);
+/* pixel-art web button — 3-slice sprite (web_option UI kit) with white and
+   orange colour variants: left + center(tiled) + right. Hover grows to
+   1.05× on a smooth ease (and eases back on leave); :active swaps to the
+   pressed sprite. Shared by the hero CTA and the mobile menu items. */
+.web-btn {
+  --btn-h: clamp(48px, 8.5vw, 60px);
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: var(--btn-h);
-  min-width: clamp(320px, 44vw, 480px);
-  padding: 0 clamp(30px, 6vw, 44px);
+  padding: 0 clamp(24px, 6vw, 40px);
   font-family: var(--pixel);
   font-size: clamp(15px, 2.4vw, 19px);
-  color: #fff;
+  font-weight: 700;
   text-decoration: none;
-  transition: transform .12s ease-out;
-  /* matches the in-game overlay shadow spec: y:2, blur:1, 50% black —
-     a single drop-shadow follows the sprite's alpha shape, covering
-     both the pixel-art button frame and the label text together */
+  transition: transform .2s ease;
+  /* in-game overlay shadow spec (y:2, blur:1, 50% black); follows the
+     sprite's alpha so frame + label share one shadow */
   filter: drop-shadow(0 2px 1px rgba(0, 0, 0, .5));
 }
-/* hover: 1.2× scale + 살짝 더 큰 폰트 */
-.btn-orange:hover { transform: scale(1.1); font-size: clamp(17px, 2.7vw, 21px); }
-/* active: 1.1× 기준으로 눌림 — 1.05×로 살짝 축소, 즉각 반응 */
-.btn-orange:active { transform: scale(1.05) translateY(2px); font-size: clamp(17px, 2.7vw, 21px); transition-duration: .06s; }
-.btn-orange__bg {
+.web-btn:hover { transform: scale(1.05); }
+.web-btn:active { transform: scale(1.02) translateY(1px); transition-duration: .06s; }
+.web-btn__bg {
   position: absolute;
   inset: 0;
   display: flex;
   z-index: 0;
   pointer-events: none;
 }
-.btn-orange__seg {
+.web-btn__seg {
   height: 100%;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
 }
-.btn-orange__seg--left,
-.btn-orange__seg--right {
+.web-btn__seg--left,
+.web-btn__seg--right {
   flex: 0 0 auto;
-  aspect-ratio: 13 / 17;
+  aspect-ratio: 13 / 16;
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
-.btn-orange__seg--left   { background-image: url('../assets/game/btn_orange_left.png'); }
-.btn-orange__seg--right  { background-image: url('../assets/game/btn_orange_right.png'); }
-.btn-orange__seg--center {
+.web-btn__seg--center {
   flex: 1 1 auto;
-  background-image: url('../assets/game/btn_orange_center.png');
   background-repeat: repeat-x;
   background-size: auto 100%;
 }
-.btn-orange:active .btn-orange__seg--left   { background-image: url('../assets/game/btn_orange_left_pressed.png'); }
-.btn-orange:active .btn-orange__seg--center { background-image: url('../assets/game/btn_orange_center_pressed.png'); }
-.btn-orange:active .btn-orange__seg--right  { background-image: url('../assets/game/btn_orange_right_pressed.png'); }
-.btn-orange__label {
+.web-btn__label {
   position: relative;
   z-index: 1;
   white-space: nowrap;
-  font-weight: 700;
-  text-shadow: 1px 2px 0 rgba(0, 0, 0, .35);
-  /* In-game label sits in a top-anchored box of 15/17 of the button
-     height (not the full height), so it reads ~1/17 higher than dead
-     center; pressed state centers it exactly — matches option_button. */
-  transform: translateY(calc(var(--btn-h) / -17));
 }
-.btn-orange:active .btn-orange__label {
-  transform: translateY(0);
-  color: #c9ccd1;
-}
+
+/* white variant — dark label */
+.web-btn--white { color: var(--navy); }
+.web-btn--white .web-btn__seg--left   { background-image: url('../assets/game/button/white/web_option_button_white_left.png'); }
+.web-btn--white .web-btn__seg--center { background-image: url('../assets/game/button/white/web_option_button_white_center.png'); }
+.web-btn--white .web-btn__seg--right  { background-image: url('../assets/game/button/white/web_option_button_white_right.png'); }
+.web-btn--white:active .web-btn__seg--left   { background-image: url('../assets/game/button/white/web_option_button_white_left_pressed.png'); }
+.web-btn--white:active .web-btn__seg--center { background-image: url('../assets/game/button/white/web_option_button_white_center_pressed.png'); }
+.web-btn--white:active .web-btn__seg--right  { background-image: url('../assets/game/button/white/web_option_button_white_right_pressed.png'); }
+
+/* orange variant — white label with a dark drop */
+.web-btn--orange { color: #fff; }
+.web-btn--orange .web-btn__label { text-shadow: 1px 2px 0 rgba(0, 0, 0, .35); }
+.web-btn--orange .web-btn__seg--left   { background-image: url('../assets/game/button/orange/web_option_button_orange_left.png'); }
+.web-btn--orange .web-btn__seg--center { background-image: url('../assets/game/button/orange/web_option_button_orange_center.png'); }
+.web-btn--orange .web-btn__seg--right  { background-image: url('../assets/game/button/orange/web_option_button_orange_right.png'); }
+.web-btn--orange:active .web-btn__seg--left   { background-image: url('../assets/game/button/orange/web_option_button_orange_left_pressed.png'); }
+.web-btn--orange:active .web-btn__seg--center { background-image: url('../assets/game/button/orange/web_option_button_orange_center_pressed.png'); }
+.web-btn--orange:active .web-btn__seg--right  { background-image: url('../assets/game/button/orange/web_option_button_orange_right_pressed.png'); }
 
 /* ---- Screenshot gallery (clean, modern swipe carousel) ------------------ */
 .shot-carousel {
@@ -903,7 +903,6 @@ html[lang="ko"] .store-badge--ko,
 html[lang="en"] .store-badge--en { display: block; }
 
 .store-note { text-align: center; margin-top: 22px; font-family: var(--sans-body); color: var(--ink-soft); font-size: 13px; }
-.mobile-menu .menu-cta { justify-content: center; color: #fff; font-size: 15px; border-color: var(--navy); }
 
 /* ---- Footer ------------------------------------------------------------ */
 .site-footer {
