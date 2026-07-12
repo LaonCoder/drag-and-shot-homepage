@@ -197,7 +197,11 @@ ul { margin: 0; padding: 0; list-style: none; }
   align-items: center;
   justify-content: center;
   gap: 4px;
-  height: calc(var(--header-h) * 4 / 7 * 0.9);
+  /* full size on wider screens; on narrow phones the 6.5vw cap takes over so
+     the title shrinks and stops shoving the menu button off the right edge
+     (iPhone mini/SE, small Androids). The revealed .nav__reveal container
+     width below is scaled to match. */
+  height: min(calc(var(--header-h) * 4 / 7 * 0.9), 6.5vw);
   white-space: nowrap;
   /* same in-game overlay shadow spec as the hero wordmark: y:2, blur:1, 50% black */
   filter: drop-shadow(0 2px 1px rgba(0, 0, 0, .5));
@@ -269,7 +273,9 @@ ul { margin: 0; padding: 0; list-style: none; }
   transition: transform .8s cubic-bezier(.22, 1.12, .4, 1);
 }
 .site-header.is-revealed .nav__reveal {
-  width: 246px;
+  /* scales down together with the wordmark height cap above so the revealed
+     title never overflows into the menu button on narrow phones */
+  width: min(246px, 49vw);
   opacity: 1;
   pointer-events: auto;
 }
@@ -1213,7 +1219,9 @@ html[lang="en"] .store-badge--en { display: block; }
 
 /* small phones */
 @media (max-width: 600px) {
-  .hero { padding-top: 28px; }
+  /* the desktop hero reserves 720px; on phones that leaves big vertical
+     gaps around the title, so shrink it to ~2/3 (480px) */
+  .hero { padding-top: 28px; min-height: 480px; }
   #contact .section-head p { white-space: normal; }
 }
 
