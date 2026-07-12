@@ -329,27 +329,26 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 /* decorative gear (matches title screen) */
 /* hamburger */
+/* pixel-art menu button (normal + pressed sprites). The old hamburger
+   <span> bars are hidden and the button shows the sprite as a background,
+   so no HTML change is needed and every page's header picks it up. */
 .nav__toggle {
-  width: 44px; height: 44px;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  border: 3px solid var(--navy);
-  border-radius: 10px;
-  background: var(--white);
-  box-shadow: var(--hard-sm);
+  width: 42px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: url("../assets/game/web_menu_button.png") center / contain no-repeat;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  cursor: pointer;
 }
-.nav__toggle span {
-  width: 20px; height: 3px;
-  background: var(--navy);
-  border-radius: 2px;
-  transition: transform .25s ease, opacity .2s ease;
+.nav__toggle span { display: none; }
+/* pressed sprite while held down, or while the menu is open */
+.nav__toggle:active,
+.nav.is-open .nav__toggle {
+  background-image: url("../assets/game/web_menu_button_pressed.png");
 }
-.nav.is-open .nav__toggle span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-.nav.is-open .nav__toggle span:nth-child(2) { opacity: 0; }
-.nav.is-open .nav__toggle span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
 /* mobile overlay menu */
 .mobile-menu {
