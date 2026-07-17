@@ -505,8 +505,8 @@ body.menu-open { overflow: hidden; }
 .wordmark__trick-wrap { position: relative; display: inline-block; }
 .wordmark__badge {
   position: absolute;
-  top: -30%;
-  left: 0.5%;
+  top: -33%;
+  left: 1.5%;
   width: 65%;
   height: auto;
 }
