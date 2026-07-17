@@ -986,7 +986,7 @@ html[lang="en"] .store-badge--en { display: block; }
 .page-hero h1 {
   font-family: var(--pixel);
   font-weight: 700;
-  font-size: clamp(26px, 5.6vw, 40px);
+  font-size: clamp(20px, 4.8vw, 34px);
   color: var(--navy);
   margin: 0 0 14px;
   letter-spacing: 0;
@@ -994,7 +994,7 @@ html[lang="en"] .store-badge--en { display: block; }
   line-height: 1.5;
   text-shadow: 2px 2px 0 #b9d6ee;
 }
-.page-hero p { margin: 0; color: var(--navy-deep); font-weight: 600; font-size: clamp(16px, 2.6vw, 19px); }
+.page-hero p { margin: 0; color: var(--navy-deep); font-weight: 600; font-size: clamp(14px, 2.2vw, 16px); }
 
 /* dark, left-aligned variant — matches the footer's navy background */
 .page-hero--dark {
