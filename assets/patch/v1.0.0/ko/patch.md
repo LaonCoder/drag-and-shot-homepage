@@ -7,15 +7,15 @@ thumb: assets/patch/v1.0.0/image/v1_0_0.jpg
 ---
 안녕하세요, 라온픽셀즈(LaonPixels) 입니다.
 
-드디어 'Trick Shot: Basketball Arcade' 가 App Store에 정식 출시되었습니다!
+드디어 'Trick Shot: Basketball Arcade' 가 App Store에 정식 출시되었습니다! 🎉
 
 플레이해 주시는 모든 분들께 진심으로 감사드리며, 보내주시는 소중한 의견을 바탕으로 더욱 완성도 높은 게임이 될 수 있도록 꾸준히 개선해 나가겠습니다.
 
 앞으로도 새로운 맵과 다양한 콘텐츠, 편의성 개선 등 지속적인 업데이트를 준비하고 있으니 많은 관심과 응원 부탁드립니다.
 
-Google Play 스토어에서도 곧 만나보실 수 있도록 준비 중입니다.
+Google Play 스토어 출시도 준비 중이니 조금만 기다려 주세요.
 
-감사합니다!
+감사합니다! 😊
 
 ---
 
