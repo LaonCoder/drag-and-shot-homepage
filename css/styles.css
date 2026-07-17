@@ -1062,6 +1062,14 @@ html[lang="en"] .store-badge--en { display: block; }
 @media (max-width: 920px) { .patch-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .patch-grid { grid-template-columns: 1fr; } }
 
+.patch-status {
+  grid-column: 1 / -1;
+  padding: 40px 0;
+  text-align: center;
+  color: var(--muted, #6b7280);
+  font-size: 15px;
+}
+
 .patch-card {
   display: flex;
   flex-direction: column;

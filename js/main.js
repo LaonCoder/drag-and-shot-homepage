@@ -37,6 +37,121 @@
     return String(version).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
   }
 
+  /* ---- patch notes: markdown loading + parsing --------------------------
+     Releases live as frontmatter+body markdown files in assets/patch/,
+     one <version>.<lang>.md per language, listed (newest first) in
+     assets/patch/manifest.json. See that folder for the format. */
+  var PATCH_TITLE_FALLBACK = { ko: "패치 노트", en: "Patch Notes" };
+  var PATCH_LOADING        = { ko: "불러오는 중…", en: "Loading…" };
+  var PATCH_LOAD_ERROR     = { ko: "패치 노트를 불러오지 못했습니다.", en: "Failed to load patch notes." };
+
+  function parsePatchMd(text) {
+    var lines = text.replace(/\r\n/g, "\n").split("\n");
+    var meta = {};
+    var i = 0;
+    if (lines[0] && lines[0].trim() === "---") {
+      for (i = 1; i < lines.length; i++) {
+        if (lines[i].trim() === "---") { i++; break; }
+        var m = lines[i].match(/^([A-Za-z]+):\s*(.*)$/);
+        if (m) meta[m[1].trim()] = m[2].trim();
+      }
+    }
+
+    var body = lines.slice(i);
+    while (body.length && body[0].trim() === "") body.shift();
+
+    var intro = [];
+    var outro = [];
+    var groups = [];
+    var current = null;
+    var mode = "intro"; // "intro" -> "group" -> "outro"
+
+    body.forEach(function (line) {
+      var trimmed = line.trim();
+      var header = trimmed.match(/^\[\s*(.+?)\s*\]$/);
+      if (header) {
+        current = { label: header[1], items: [] };
+        groups.push(current);
+        mode = "group";
+        return;
+      }
+      var bullet = line.match(/^(\s*)-\s+(.*)$/);
+      if (bullet && mode === "group" && current) {
+        var indent = bullet[1].length;
+        var text = bullet[2];
+        var last = current.items[current.items.length - 1];
+        if (indent >= 2 && last) {
+          if (typeof last === "string") {
+            last = { text: last, items: [] };
+            current.items[current.items.length - 1] = last;
+          }
+          last.items.push(text);
+        } else {
+          current.items.push(text);
+        }
+        return;
+      }
+      if (trimmed === "") return;
+      if (mode === "intro") {
+        intro.push(trimmed);
+      } else {
+        mode = "outro";
+        outro.push(trimmed);
+      }
+    });
+
+    return {
+      version: meta.version || "",
+      date: meta.date || "",
+      tag: meta.tag || "",
+      summary: meta.summary || "",
+      thumb: meta.thumb || "",
+      cardTitle: meta.title || "",
+      intro: intro.join(" "),
+      groups: groups,
+      outro: outro.join(" "),
+    };
+  }
+
+  var patchCache = {};        // lang -> array of parsed releases
+  var patchManifestPromise = null;
+
+  function fetchPatchManifest() {
+    if (!patchManifestPromise) {
+      patchManifestPromise = fetch("assets/patch/manifest.json")
+        .then(function (r) {
+          if (!r.ok) throw new Error("patch manifest fetch failed: " + r.status);
+          return r.json();
+        });
+    }
+    return patchManifestPromise;
+  }
+
+  function loadPatchReleases(lang) {
+    if (patchCache[lang]) return Promise.resolve(patchCache[lang]);
+    var titleFallback = PATCH_TITLE_FALLBACK[lang] || PATCH_TITLE_FALLBACK.en;
+    return fetchPatchManifest().then(function (versions) {
+      return Promise.all(versions.map(function (id) {
+        return fetch("assets/patch/" + id + "." + lang + ".md")
+          .then(function (r) {
+            if (!r.ok) throw new Error("patch md fetch failed: " + id);
+            return r.text();
+          })
+          .then(function (text) {
+            var rel = parsePatchMd(text);
+            if (!rel.cardTitle) rel.cardTitle = "TRICK SHOT " + rel.version + " " + titleFallback;
+            return rel;
+          });
+      }));
+    }).then(function (releases) {
+      patchCache[lang] = releases;
+      return releases;
+    }).catch(function (err) {
+      console.error("[patch] failed to load releases:", err);
+      return [];
+    });
+  }
+
   // build a (possibly nested) bullet list; an item is a plain string or an
   // object { text, items: [...] } for sub-bullets
   function patchItemList(items) {
@@ -62,7 +177,7 @@
 
   function patchDetailHTML(rel, p) {
     var groups = (rel.groups || []).map(function (g) {
-      return patchChangeGroup(p.legend[g.type], g.items);
+      return patchChangeGroup(g.label, g.items);
     }).join("");
     var intro = rel.intro ? '<p class="release__intro">' + esc(rel.intro) + '</p>' : "";
     var outro = rel.outro ? '<p class="release__outro">' + esc(rel.outro) + '</p>' : "";
@@ -86,25 +201,28 @@
   function routePatch(lang) {
     var list = $("#patch-list");
     var detail = $("#patch-detail");
-    if (!list || !detail) return;
-    var p = window.i18n.t("patch", lang);
+    if (!list || !detail) return Promise.resolve();
+    var p = window.i18n.t("patch", lang) || {};
     var hash = (location.hash || "").replace(/^#/, "");
-    var rel = null;
-    (p.releases || []).forEach(function (r) {
-      if (patchSlug(r.version) === hash) rel = r;
-    });
 
-    if (rel) {
-      detail.innerHTML = patchDetailHTML(rel, p);
-      detail.hidden = false;
-      list.hidden = true;
-      window.scrollTo(0, 0);
-    } else {
-      detail.hidden = true;
-      detail.innerHTML = "";
-      list.hidden = false;
-    }
-    observeReveals();
+    return loadPatchReleases(lang).then(function (releases) {
+      var rel = null;
+      releases.forEach(function (r) {
+        if (patchSlug(r.version) === hash) rel = r;
+      });
+
+      if (rel) {
+        detail.innerHTML = patchDetailHTML(rel, p);
+        detail.hidden = false;
+        list.hidden = true;
+        window.scrollTo(0, 0);
+      } else {
+        detail.hidden = true;
+        detail.innerHTML = "";
+        list.hidden = false;
+      }
+      observeReveals();
+    });
   }
 
   // grid shows up to 3 rows per page; columns follow the CSS breakpoints
@@ -134,41 +252,55 @@
 
   function renderPatchGrid(lang) {
     var grid = $("#patch-grid");
-    if (!grid) return;
-    var p = window.i18n.t("patch", lang);
-    var releases = p.releases || [];
-    var perPage = patchPerPage();
-    var totalPages = Math.max(1, Math.ceil(releases.length / perPage));
-    if (patchPage > totalPages) patchPage = totalPages;
-    if (patchPage < 1) patchPage = 1;
-    var start = (patchPage - 1) * perPage;
-    var pageItems = releases.slice(start, start + perPage);
+    if (!grid) return Promise.resolve();
 
-    grid.innerHTML = "";
-    pageItems.forEach(function (rel) {
-      var a = document.createElement("a");
-      a.className = "patch-card reveal";
-      a.href = "#" + patchSlug(rel.version);
-      a.innerHTML =
-        '<div class="patch-card__thumb">' +
-          (rel.thumb ? '<img src="' + esc(rel.thumb) + '" alt="" loading="lazy">' : '') +
-        '</div>' +
-        '<div class="patch-card__body">' +
-          '<h3 class="patch-card__title">' + esc(rel.cardTitle || rel.version) + '</h3>' +
-          '<p class="patch-card__summary">' + esc(rel.summary || "") + '</p>' +
-          '<span class="patch-card__date">' + esc(rel.date) + '</span>' +
-        '</div>';
-      grid.appendChild(a);
+    if (!patchCache[lang]) {
+      grid.innerHTML = '<p class="patch-status">' + esc(PATCH_LOADING[lang] || PATCH_LOADING.en) + '</p>';
+      renderPatchPagination(0);
+    }
+
+    return loadPatchReleases(lang).then(function (releases) {
+      if (!releases.length) {
+        grid.innerHTML = '<p class="patch-status">' + esc(PATCH_LOAD_ERROR[lang] || PATCH_LOAD_ERROR.en) + '</p>';
+        renderPatchPagination(0);
+        observeReveals();
+        return;
+      }
+
+      var perPage = patchPerPage();
+      var totalPages = Math.max(1, Math.ceil(releases.length / perPage));
+      if (patchPage > totalPages) patchPage = totalPages;
+      if (patchPage < 1) patchPage = 1;
+      var start = (patchPage - 1) * perPage;
+      var pageItems = releases.slice(start, start + perPage);
+
+      grid.innerHTML = "";
+      pageItems.forEach(function (rel) {
+        var a = document.createElement("a");
+        a.className = "patch-card reveal";
+        a.href = "#" + patchSlug(rel.version);
+        a.innerHTML =
+          '<div class="patch-card__thumb">' +
+            (rel.thumb ? '<img src="' + esc(rel.thumb) + '" alt="" loading="lazy">' : '') +
+          '</div>' +
+          '<div class="patch-card__body">' +
+            '<h3 class="patch-card__title">' + esc(rel.cardTitle || rel.version) + '</h3>' +
+            '<p class="patch-card__summary">' + esc(rel.summary || "") + '</p>' +
+            '<span class="patch-card__date">' + esc(rel.date) + '</span>' +
+          '</div>';
+        grid.appendChild(a);
+      });
+
+      renderPatchPagination(totalPages);
+      observeReveals();
     });
-
-    renderPatchPagination(totalPages);
-    observeReveals();
   }
 
   function renderPatch(lang) {
-    if (!$("#patch-grid")) return;
-    renderPatchGrid(lang);
-    routePatch(lang);
+    if (!$("#patch-grid")) return Promise.resolve();
+    return renderPatchGrid(lang).then(function () {
+      return routePatch(lang);
+    });
   }
 
   function renderDoc(containerId, key, lang) {
