@@ -657,7 +657,7 @@ body.menu-open { overflow: hidden; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(1.12) saturate(1.05);
+  filter: brightness(1.07) saturate(1.05);
 }
 
 /* nav arrows — float in the gutter between the carousel and the screen
