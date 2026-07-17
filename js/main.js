@@ -314,6 +314,7 @@
       }
 
       var perPage = patchPerPage();
+      patchLastPerPage = perPage;
       var totalPages = Math.max(1, Math.ceil(releases.length / perPage));
       if (patchPage > totalPages) patchPage = totalPages;
       if (patchPage < 1) patchPage = 1;
@@ -1065,12 +1066,21 @@
     if (list) list.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  // re-page the grid when the column count changes on resize
+  // re-page the grid when the column count changes on resize. Only
+  // re-render if patchPerPage() actually changed — mobile browsers fire
+  // "resize" on every scroll (their address bar collapsing/expanding
+  // changes innerHeight, which patchPerPage() doesn't use), and
+  // re-rendering rebuilds the cards' DOM, which replays their .reveal
+  // scroll-in animation as if seeing them for the first time.
   var patchResizeTimer;
+  var patchLastPerPage = null;
   window.addEventListener("resize", function () {
     if (!document.querySelector("#patch-grid")) return;
     clearTimeout(patchResizeTimer);
     patchResizeTimer = setTimeout(function () {
+      var perPage = patchPerPage();
+      if (perPage === patchLastPerPage) return;
+      patchLastPerPage = perPage;
       if (currentLang) renderPatchGrid(currentLang);
     }, 150);
   });
