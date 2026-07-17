@@ -642,7 +642,7 @@ body.menu-open { overflow: hidden; }
 .shot-slide {
   flex: 0 0 100%;
   min-width: 100%;
-  aspect-ratio: 1920 / 1354;
+  aspect-ratio: 2048 / 1430;
 }
 .shot-slide img {
   display: block;
