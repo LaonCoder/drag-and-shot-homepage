@@ -7,15 +7,15 @@ thumb: assets/patch/v1.0.0/image/v1_0_0.jpg
 ---
 Hello, this is LaonPixels.
 
-'Trick Shot: Basketball Arcade' has finally officially launched on the App Store!
+'Trick Shot: Basketball Arcade' has finally officially launched on the App Store! 🎉
 
 We sincerely thank everyone who plays, and we'll keep improving the game based on your valuable feedback to make it even more polished.
 
 We're also preparing continuous updates going forward — new maps, more content, and quality-of-life improvements — so please stay tuned and keep supporting us.
 
-We're also preparing to bring the game to the Google Play Store soon.
+We're also preparing our Google Play Store launch, so please hold tight a little longer.
 
-Thank you!
+Thank you! 😊
 
 ---
 
