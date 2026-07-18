@@ -496,17 +496,26 @@ body.menu-open { overflow: hidden; }
   /* same in-game overlay shadow spec as the CTA button: y:2, blur:1, 50% black */
   filter: drop-shadow(0 2px 1px rgba(0, 0, 0, .5));
 }
-.wordmark__full { width: clamp(521px, 166vw, 1709px); height: auto; }
+.wordmark__full { width: clamp(521px, 166vw, 1800px); height: auto; }
 /* "BASKETBALL ARCADE" badge, perched above the top-left of DRAG — sized
    and positioned as % of the wrap (== the full lockup's own box) so it
    scales together with the wordmark at every viewport width */
-.wordmark__wrap { position: relative; display: inline-block; }
+.wordmark__wrap {
+  position: relative;
+  display: inline-block;
+  animation: wordmark-pulse 3.6s ease-in-out infinite;
+}
 .wordmark__badge {
   position: absolute;
   top: -33%;
   left: 0.8%;
   width: 33.6%;
   height: auto;
+}
+
+@keyframes wordmark-pulse {
+  0%, 100% { transform: scale(.95); }
+  50% { transform: scale(1.05); }
 }
 
 /* bird flock canvas — sits behind UFO/jet, above gradient background */
