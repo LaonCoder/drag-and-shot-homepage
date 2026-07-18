@@ -172,7 +172,7 @@
           })
           .then(function (text) {
             var rel = parsePatchMd(text);
-            if (!rel.cardTitle) rel.cardTitle = "DRAG & SHOT " + rel.version + " " + titleFallback;
+            if (!rel.cardTitle) rel.cardTitle = "Drag & Shot " + rel.version + " " + titleFallback;
             return rel;
           });
       }));

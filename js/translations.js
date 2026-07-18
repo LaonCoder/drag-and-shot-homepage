@@ -10,10 +10,10 @@ window.TS_I18N = {
   /* ===================================================================== */
   ko: {
     meta: {
-      titleHome:    "DRAG & SHOT — 드래그하고 골인! 물리 기반 Drag & Shot",
-      titlePrivacy: "개인정보 처리방침 — DRAG & SHOT",
-      titleTerms:   "이용약관 — DRAG & SHOT",
-      titlePatch:   "패치 노트 — DRAG & SHOT",
+      titleHome:    "Drag & Shot — 드래그하고 골인! 물리 기반 Drag & Shot",
+      titlePrivacy: "개인정보 처리방침 — Drag & Shot",
+      titleTerms:   "이용약관 — Drag & Shot",
+      titlePatch:   "패치 노트 — Drag & Shot",
     },
     nav: {
       stages: "맵", faq: "FAQ", contact: "문의하기", patch: "패치 노트",
@@ -62,7 +62,7 @@ window.TS_I18N = {
       note: "* 출시 플랫폼 및 일정은 지역에 따라 다를 수 있습니다.",
     },
     footer: {
-      desc: "공을 드래그해 골대에 넣어라! 물리 기반 농구 Drag & Shot 퍼즐 DRAG & SHOT.",
+      desc: "공을 드래그해 골대에 넣어라! 물리 기반 농구 Drag & Shot 퍼즐 Drag & Shot.",
       gameTitle: "게임",
       supportTitle: "지원",
       legalTitle: "정책",
@@ -128,10 +128,10 @@ window.TS_I18N = {
   /* ===================================================================== */
   en: {
     meta: {
-      titleHome:    "DRAG & SHOT — Drag, aim, and swish!",
-      titlePrivacy: "Privacy Policy — DRAG & SHOT",
-      titleTerms:   "Terms of Service — DRAG & SHOT",
-      titlePatch:   "Patch Notes — DRAG & SHOT",
+      titleHome:    "Drag & Shot — Drag, aim, and swish!",
+      titlePrivacy: "Privacy Policy — Drag & Shot",
+      titleTerms:   "Terms of Service — Drag & Shot",
+      titlePatch:   "Patch Notes — Drag & Shot",
     },
     nav: {
       stages: "Maps", faq: "FAQ", contact: "Contact", patch: "Patch Notes",
@@ -180,7 +180,7 @@ window.TS_I18N = {
       note: "* Launch platforms and timing may vary by region.",
     },
     footer: {
-      desc: "Drag the ball, aim for the hoop. DRAG & SHOT, a physics-based basketball Drag & Shot puzzle.",
+      desc: "Drag the ball, aim for the hoop. Drag & Shot, a physics-based basketball Drag & Shot puzzle.",
       gameTitle: "Game",
       supportTitle: "Support",
       legalTitle: "Legal",
