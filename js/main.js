@@ -1,5 +1,5 @@
 /* =========================================================================
-   TRICKY SHOT — UI behavior
+   DRAG & SHOT — UI behavior
    Mobile menu · language toggle · FAQ accordion · scroll reveal ·
    and rendering of the collections that live in translations.js
    (stages, FAQ, patch notes, privacy sections) so they re-render on
@@ -172,7 +172,7 @@
           })
           .then(function (text) {
             var rel = parsePatchMd(text);
-            if (!rel.cardTitle) rel.cardTitle = "TRICKY SHOT " + rel.version + " " + titleFallback;
+            if (!rel.cardTitle) rel.cardTitle = "DRAG & SHOT " + rel.version + " " + titleFallback;
             return rel;
           });
       }));

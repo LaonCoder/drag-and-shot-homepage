@@ -7,7 +7,7 @@ thumb: assets/patch/v1.0.0/image/v1_0_0.jpg
 ---
 Hello, this is 라온픽셀즈(LaonPixels).
 
-'Tricky Shot: Basketball Arcade' has finally officially launched on the App Store! 🎉
+'Drag & Shot: Basketball Arcade' has finally officially launched on the App Store! 🎉
 
 We sincerely thank everyone who plays, and we'll keep improving the game based on your valuable feedback to make it even more polished.
 

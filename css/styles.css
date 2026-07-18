@@ -1,5 +1,5 @@
 /* =========================================================================
-   TRICKY SHOT — game landing site
+   DRAG & SHOT — game landing site
    Mobile-first, vanilla CSS. Design tokens pulled from the title-screen art.
    ========================================================================= */
 
@@ -266,7 +266,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   z-index: 4;
 }
 
-/* the TRICKY SHOT wordmark in the header — hidden until the hero scrolls
+/* the DRAG & SHOT wordmark in the header — hidden until the hero scrolls
    past, then slides in from the left (its reserved width pushes the
    version badge over by the same amount), and on the way back up it
    slides out to the left and fades — never squashing, since the
@@ -486,28 +486,26 @@ body.menu-open { overflow: hidden; }
   pointer-events: none;
 }
 
-/* TRICK / SHOT horizontal pixel wordmark images */
+/* DRAG & SHOT horizontal pixel wordmark image */
 .wordmark {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: clamp(28px, 6vw, 64px);
   margin: 4px 0 0;
   /* same in-game overlay shadow spec as the CTA button: y:2, blur:1, 50% black */
   filter: drop-shadow(0 2px 1px rgba(0, 0, 0, .5));
 }
-.wordmark__trick { width: clamp(270px, 88vw, 900px); height: auto; }
-.wordmark__shot  { width: clamp(223px, 72vw, 745px); height: auto; }
-/* "BASKETBALL ARCADE" badge, perched above the top-left of TRICK — sized
-   and positioned as % of the wrap (== TRICK's own box) so it scales
-   together with the wordmark at every viewport width */
-.wordmark__trick-wrap { position: relative; display: inline-block; }
+.wordmark__full { width: clamp(521px, 166vw, 1709px); height: auto; }
+/* "BASKETBALL ARCADE" badge, perched above the top-left of DRAG — sized
+   and positioned as % of the wrap (== the full lockup's own box) so it
+   scales together with the wordmark at every viewport width */
+.wordmark__wrap { position: relative; display: inline-block; }
 .wordmark__badge {
   position: absolute;
   top: -33%;
-  left: 1.5%;
-  width: 65%;
+  left: 0.8%;
+  width: 33.6%;
   height: auto;
 }
 

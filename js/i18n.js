@@ -1,5 +1,5 @@
 /* =========================================================================
-   TRICKY SHOT — i18n engine
+   DRAG & SHOT — i18n engine
    - Resolves nested keys ("nav.stages") from window.TS_I18N[lang]
    - Applies text / HTML / attribute translations across the DOM
    - Persists the choice to localStorage and emits a "languagechange" event
